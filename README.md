@@ -3,7 +3,7 @@
 Frustrated with issues running more complex logging systems, I have created 'litelog'.
 Litelog is a modular system for recording and logging data, for security, research, or
 anything else you can think of.  It is intended to be secure, easy to use, and easy to
-make small contributions to.
+make small contributions to.  Please fork widely.
 
 Litelog is not tied to any particular programming language or data storage representation.
 The assumption is that if a new way of doing things is introduced, any differences are
