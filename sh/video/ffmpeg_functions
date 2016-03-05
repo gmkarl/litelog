@@ -1,0 +1,45 @@
+
+# replace process with a recording process
+# Usage: exec_record <input_format> <input_path> <output_file>
+exec_record() {
+  exec ffmpeg -loglevel warning -nostats -f "$1" -i "$2" -codec copy -fs "$ROTATE_BYTES" file:"$3"
+}
+
+# compress a recording to the currently set codecs
+# Usage compress <input_path> <output_path>
+compress() {
+  ffmpeg -loglevel warning -nostats -i file:"$1" -acodec "$ACODEC" -vcodec "$VCODEC" -y file:"$2"
+}
+
+audio_compress() {
+  compress "$@"
+}
+
+video_compress() {
+  compress "$@"
+}
+
+# output file duration in milliseconds
+# Usage: duration <file>
+duration() {
+  # ffprobe gives a lot of different kinds of durations.
+  # this code reads duration from the info log, which covers some hard to find otherwise.
+  # some are still unavailable and could be calculated by going through all the frames or
+  # dividing by the bitrate, but this is not done.
+
+  # matches '  Duration: 00:00:00.00,.*'
+  regexp='^\s*\S*: \([0-9][0-9]\):\([0-9][0-9]\):\([0-9][0-9]\)\.\([0-9][0-9]\),.*$'
+
+  # converts to milliseconds, leaving a space to identify '0' prefixes
+  replacement='(( \1*60+ \2)*60+ \3)*1000+ \4*10'
+
+  # remove '0' prefixes which will improperly mark a number as octal otherwise
+  fixup='s/ 0//g'
+
+  # mash together and output
+  echo $(($(
+    ffprobe -loglevel info -bitexact file:"$1" 2>&1 |
+    sed -ne "s/$regexp/$replacement/p" | sed -e "$fixup"
+  )))
+}
+

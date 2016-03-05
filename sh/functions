@@ -1,0 +1,35 @@
+LOGDIR="${LOGDIR:-/var/log/litelog}"
+LITELOGDIR="${LITELOGDIR:-/usr/lib/litelog}"
+HOSTNAME="${HOSTNAME:-$(hostname)}"
+LITELOGDIR="${LITELOGDIR}/sh"
+ROTATE_BYTES=$((${ROTATE_BYTES:- 64 * 1024 * 1024 * 1024 }))
+TIGHT_SPACE_BYTES=$((${TIGHT_SPACE_BYTES:- ROTATE_BYTES * 3 }))
+VIDEO_BACKEND=${VIDEO_BACKEND:-ffmpeg}
+VCODEC=${VCODEC:-h264}
+AUDIO_BACKEND=${AUDIO_BACKEND:-ffmpeg}
+ACODEC=${ACODEC:-opus}
+
+free_bytes() {
+  echo $(($(stat --file-system --format="%a * %S" "$LOGDIR")))
+}
+
+size_of() {
+  stat --format="%s" "$@"
+}
+
+space_is_tight() {
+  test $(free_bytes) -lt $TIGHT_SPACE_BYTES
+}
+
+# true if the two provided files have durations similar within epsilon milliseconds
+# Usage: duration_is_same_epsilon <path_one> <path_two> <epsilon>
+# also true if path_one has a zero duration, assuming transcoding a damaged file
+duration_is_same_epsilon() {
+  duration1=$(duration "$1")
+  duration2=$(duration "$2")
+  epsilon=$(($3))
+  delta=$((duration1 - duration2))
+  test $duration1 -eq 0 -o \( $delta -ge -$epsilon -a $delta -le $epsilon \) 
+}
+
+. "$LITELOGDIR"/video/${VIDEO_BACKEND}_functions
