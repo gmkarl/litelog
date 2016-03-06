@@ -1,4 +1,5 @@
-= Litelog =
+Litelog
+=======
 
 Frustrated with issues running more complex logging systems, I have created 'litelog'.
 Litelog is a modular system for recording and logging data, for surveillance, research, or
@@ -36,7 +37,8 @@ The current setup for litelog after install is:
 New modules should be placed in an appropriate subfolder, and provided a README.md file
 which describes what they do.
 
-== Concerns ==
+Concerns
+--------
 
 Modularizing things like systemd out results in interdependencies between modules, and requires
 module authors to spend energy understanding the existing norms.  For ease of maintenance, this
