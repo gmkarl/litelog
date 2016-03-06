@@ -3,6 +3,6 @@ Description=Litelog-Sh Git Committer
 
 [Service]
 EnvironmentFile=/etc/litelog
-ExecStart=/bin/sh -c "git -C ${LOGDIR} add ."
-ExecStart=/bin/sh -c "git -C ${LOGDIR} commit -m $$(date -Iseconds)"
+ExecStart=/bin/sh -c "cd ${LOGDIR}; git add ."
+ExecStart=/bin/sh -c "cd ${LOGDIR}; git commit -m $$(date -Iseconds)"
 Type=oneshot
