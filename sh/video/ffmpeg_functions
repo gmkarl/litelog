@@ -15,8 +15,8 @@ exec_record() {
 # Usage: compress <input_path>_unprocessed.mkv
 # output filename is saved in rCOMPRESSED
 compress() {
-  rCOMPRESSED="${1%_unproesed.mkv}_${ACODEC}_${VCODEC}.mkv" 
-  ffmpeg -loglevel error -nostats -i "$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 file:"$rCOMPRESSED"
+  rCOMPRESSED="${1%_unprocessed.mkv}_${ACODEC}_${VCODEC}.mkv" 
+  ffmpeg -loglevel error -nostats -i "file:$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 file:"$rCOMPRESSED"
 }
 
 # output file duration in milliseconds
