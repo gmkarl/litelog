@@ -1,13 +1,36 @@
+# this should already have been set
+# LITELOGDIR="${LITELOGDIR:-/usr/lib/litelog}"
+
+# path in which logs are stored
 LOGDIR="${LOGDIR:-/var/log/litelog}"
-LITELOGDIR="${LITELOGDIR:-/usr/lib/litelog}"
+
+# name of system, to label logs
 HOSTNAME="${HOSTNAME:-$(hostname)}"
-LITELOGDIR="${LITELOGDIR}/sh"
+
+# for duration-based logs, duration at which to open a new log
+ROTATE_SECONDS=$((${ROTATE_SECONDS:- 60 * 60 * 2 }))
+
+# for size-based logs, size at which to open a new log (not used)
 ROTATE_BYTES=$((${ROTATE_BYTES:- 64 * 1024 * 1024 * 1024 }))
+
+# number of bytes of space to keep free on partition containing $LOGDIR
 TIGHT_SPACE_BYTES=$((${TIGHT_SPACE_BYTES:- ROTATE_BYTES * 3 }))
+
+# name to give logfiles, strftime format (sh module authors can use $(date +"$LOGFILE_PREFIX") )
+LOGFILE_PREFIX="${LOGFILE_PREFIX:-%Y-%m-%dT%H:%M:%S%z_$HOSTNAME}"
+
+# nonempty if compression should be done immediately as recording
+COMPRESS_ON_FLY="${COMPRESS_ON_FLY:-}"
+
 VIDEO_BACKEND=${VIDEO_BACKEND:-ffmpeg}
 VCODEC=${VCODEC:-h264}
+
 AUDIO_BACKEND=${AUDIO_BACKEND:-ffmpeg}
 ACODEC=${ACODEC:-opus}
+
+
+## convenience for sh group
+LITELOGDIR="${LITELOGDIR}/sh"
 
 free_bytes() {
   echo $(($(stat --file-system --format="%a * %S" "$LOGDIR")))

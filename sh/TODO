@@ -1,0 +1,6 @@
+[x] update system to not have LOGDIR and LITELOGDIR be easily configurable, so
+    that systemd can have path services on them (could have a script to configure them)
+[ ] switch back to separating raw recording and compression.  XO is too slow to compress everything.
+[ ] update max time delta to at least 110
+[ ] test new setup
+  [ ] fix bugs

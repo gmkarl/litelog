@@ -1,4 +1,0 @@
-[Service]
-ExecStart=/bin/sh /usr/lib/litelog/sh/video/record.sh "%I"
-ExecStopPost=/bin/sh /usr/lib/litelog/sh/video/compress.sh &
-Restart=always

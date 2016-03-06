@@ -1,10 +1,12 @@
 #!/bin/sh
 
 . /etc/litelog
+
+# LITELOGDIR defaults to /var/lib/litelog
 . "$LITELOGDIR"/sh/functions
 
-/bin/sh "$LITELOGDIR"/video/compress.sh &
+# see: $LITELOGDIR/sh/functions
+ensure_space_free &
 
-path="$*"
-
-exec_record v4l2 "$path" "$LOGDIR"/video/"$(date -Is)_${HOSTNAME}_${path##*/}_unprocessed.mkv"
+# see: $LITELOGDIR/sh/video/ffmpeg_functions
+exec_record v4l2 "$1" "${1##*/}"

@@ -1,0 +1,9 @@
+[Unit]
+Description=Litelog-Sh Video Compression Path Monitor
+
+[Path]
+PathExistsGlob=/var/lib/litelog/video/*_unprocessed.mkv
+PathChanged=/var/lib/litelog/video
+
+[Install]
+WantedBy=default.target

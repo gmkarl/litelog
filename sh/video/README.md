@@ -13,7 +13,8 @@ Current recording formats supported:
 Current system services supported:
  [x] systemd
  [ ] openrc
+ [ ] cron
 
-Current encoding systems supported:
+Current media frameworks supported:
  [x] ffmpeg
  [ ] gstreamer

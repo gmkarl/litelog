@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Attempts to encode all unprocessed video
+
 . /etc/litelog
 . "$LITELOGDIR"/sh/functions
 
@@ -8,6 +10,12 @@ cd "$LOGDIR"/video
 	flock -n 9 || exit 1
 	for unprocessed in *_unprocessed.mkv
 	do
+		# if no unprocessed files exist
+		test -e "$unprocessed" || continue
+
+		# do not process open files
+		fuser -s "$unprocessed" && continue
+
 		if ! test -s "$unprocessed"
 		then
 			echo "deleting zero sized file: $unprocessed"
@@ -15,16 +23,21 @@ cd "$LOGDIR"/video
 			continue
 		fi	
 
+		# see: sh/functions and sh/video/free_space.sh
 		ensure_space_free
 
-		# compress a file
-		pfx=${unprocessed%_unprocessed.mkv}
-		cmprssd="$pfx"_${ACODEC}_${VCODEC}.mkv
-		compress "$unprocessed" "$cmprssd" || continue
-		duration_is_same_epsilon "$unprocessed" "$cmprssd" 54 || continue
-		git add "$cmprssd"
-		git commit -m "$cmprssd"
-		touch "$cmprssd" -r "$unprocessed"
+		# compress file
+		# see: sh/video/ffmpeg_functions
+		compress "$unprocessed" || continue
+
+		# verify full duration encoded (within 220 ms)
+		# see: sh/functions and sh/video/ffmpeg_functions
+		duration_is_same_epsilon "$unprocessed" "$rCOMPRESSED" 220 || continue
+
+		# copy timestamp
+		touch "$rCOMPRESSED" -r "$unprocessed"
+
+		# mark processed
 		mv "$unprocessed" "$pfx"_raw.mkv
 	done
 ) 9>.compress_video_lock

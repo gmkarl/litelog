@@ -1,0 +1,9 @@
+[Unit]
+Description=Litelog-Sh Git Commit Timer
+
+[Timer]
+OnCalendar=*:0/2:00:00
+Persistent=true
+
+[Install]
+WantedBy=default.target

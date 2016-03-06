@@ -1,22 +1,22 @@
 
 # replace process with a recording process
-# Usage: exec_record <input_format> <input_path> <output_file>
+# Usage: exec_record <input_format> <input_path> <output_label>
 exec_record() {
-  exec ffmpeg -loglevel warning -nostats -f "$1" -i "$2" -codec copy -fs "$ROTATE_BYTES" file:"$3"
+  fnprefix="$LOGDIR"/video/"$(date +"$LOGFILE_PREFIX")"_"%04d"_"$3"
+  if test -n "$COMPRESS_ON_FLY"
+  then
+    exec ffmpeg -loglevel error -nostats -f "$1" -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_raw.mkv -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_"$ACODEC"_"$VCODEC".mkv
+  else
+    exec ffmpeg -loglevel error -nostats -f "$1" -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_unprocessed.mkv
+  fi
 }
 
-# compress a recording to the currently set codecs
-# Usage compress <input_path> <output_path>
+# compress a file that was not compressed on the fly
+# Usage: compress <input_path>_unprocessed.mkv
+# output filename is saved in rCOMPRESSED
 compress() {
-  ffmpeg -loglevel warning -nostats -i file:"$1" -acodec "$ACODEC" -vcodec "$VCODEC" -y file:"$2"
-}
-
-audio_compress() {
-  compress "$@"
-}
-
-video_compress() {
-  compress "$@"
+  rCOMPRESSED="${1%_unproesed.mkv}_${ACODEC}_${VCODEC}.mkv" 
+  ffmpeg -loglevel error -nostats -i "$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 file:"$rCOMPRESSED"
 }
 
 # output file duration in milliseconds

@@ -1,0 +1,8 @@
+[Unit]
+Description=Litelog-Sh Systemd Configuration Monitor
+
+[Path]
+PathChanged=/etc/litelog
+
+[Install]
+WantedBy=default.target

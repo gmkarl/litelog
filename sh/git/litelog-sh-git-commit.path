@@ -1,0 +1,8 @@
+[Unit]
+Description=Litelog-Sh Git Commit Path Monitor
+
+[Path]
+PathChanged=/var/lib/litelog/video
+
+[Install]
+WantedBy=default.target
