@@ -28,16 +28,17 @@ cd "$LOGDIR"/video
 
 		# compress file
 		# see: sh/video/ffmpeg_functions
-		compress "$unprocessed" || continue
+		compress "$unprocessed" ".incomplete"|| continue
 
+		finish "$rCOMPRESSED" || continue
 		# verify full duration encoded (within 220 ms)
-		# see: sh/functions and sh/video/ffmpeg_functions
-		duration_is_same_epsilon "$unprocessed" "$rCOMPRESSED" 220 || continue
+		duration_is_same_epsilon "$unprocessed" "$rCOMPRESSED".incomplete 220 || continue
 
-		# copy timestamp
-		touch "$rCOMPRESSED" -r "$unprocessed"
+		# copy timestamp and remove .incomplete suffix
+		touch "$rCOMPRESSED".incomplete -r "$1"
+		mv "$rCOMPESSED".incomplete "$rCOMPRESSED"
 
 		# mark processed
-		mv "$unprocessed" "$pfx"_raw.mkv
+		mv "$unprocessed" "${unprocessed%_unprocessed.mkv}"_raw.mkv
 	done
 ) 9>.compress_video_lock
