@@ -32,4 +32,28 @@ duration_is_same_epsilon() {
   test $duration1 -eq 0 -o \( $delta -ge -$epsilon -a $delta -le $epsilon \) 
 }
 
+# make sure space is kept free
+ensure_space_free() {
+  while space_is_tight
+  do
+    # for video, deletes an already-compressed file
+    ls -d "$LITELOGDIR"/*/free_space.sh | sort -R | {
+      read free_space_script
+      module=${free_space_script%/*}
+      module=${module##*/}
+      echo "Drive space is getting tight, asking $module to delete an unneeded file ..."
+      /bin/sh "$free_space_script"
+    } || for free_space_script in "$LITElOGDIR"/*/free_space.sh
+    # in case one free script failed, try all of them
+    do
+      /bin/sh "$free_space_script" || continue # try next script
+      continue 2 # script succeded, check for free space again
+    done
+    # no scripts succeeded
+    # TODO: allow a config setting that starts removing objects from git history
+    echo "NO MODULE ABLE TO FREE MORE SPACE"
+    return 1
+  done
+}
+
 . "$LITELOGDIR"/video/${VIDEO_BACKEND}_functions

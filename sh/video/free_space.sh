@@ -6,7 +6,7 @@
 cd "$LOGDIR"/video
 
 # delete the raw file which contains the least information
-# (compresses to the smallest size)
+# (compressed to the smallest size)
 min=$TIGHT_SPACE_BYTES
 best_file=""
 for raw_file in *_raw.mkv
@@ -22,6 +22,7 @@ done
 if test -z "$best_file"
 then
   echo "Couldn't pick a file to delete !!"
+  false
 else
   rm -f "$best_file"
   echo "Deleted '$best_file'"
