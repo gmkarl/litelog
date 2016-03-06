@@ -12,4 +12,6 @@ install: install-module ${LOGDIR}/.git ${LOGDIR}/.gitignore
 	echo '.*_lock' > $@
 	echo '*_unprocessed.*' >> $@
 	echo '*_raw.*' >> $@
+	echo '*.incomplete' >> $@
+	echo 'tmp/**' >> $@
 	
