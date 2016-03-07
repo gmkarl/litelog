@@ -1,3 +1,8 @@
+# activate an input but do nothing with it
+# Usage: fake_record <input_format> <input_path> <time_in_seconds>
+fake_record() {
+  ffmpeg -loglevel error -nostats -f "$1" -i "$2" -timelimit "$3" -f null /dev/null
+}
 
 # replace process with a recording process
 # Usage: exec_record <input_format> <input_path> <output_label>

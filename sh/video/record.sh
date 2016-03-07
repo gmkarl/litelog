@@ -6,7 +6,17 @@
 . "$LITELOGDIR"/sh/functions
 
 # see: $LITELOGDIR/sh/functions
-ensure_space_free &
+while ! ensure_space_free
+do
+	echo "Space filled on $LOGDIR ... will try again in an hour."
+
+	if test -n "$FAKE_RECORD"
+	then
+		fake_record $((60*60))
+	else
+		sleep $((60*60))
+	fi
+done
 
 # see: $LITELOGDIR/sh/video/ffmpeg_functions
 exec_record v4l2 "$1" "${1##*/}"
