@@ -22,7 +22,7 @@ The current setup for litelog after install is:
 - /etc/litelog contains local customizations
   - must set LITELOGDIR for modules to find their resources
   - defaults are at the top of sh/functions
-    [ ] TODO: move this out of sh, make a defaults environment file
+    - [ ] TODO: move this out of sh, make a defaults environment file
 - LITELOGDIR (/usr/lib/litelog) contains all litelog scripts and defaults
   - Current subfolder layout is <language_or_platform>/<module>
   - Ideally a makefile in the root of each language_or_platform subfolder installs loggers
@@ -42,16 +42,13 @@ Concerns
 
 Modularizing things like systemd out results in interdependencies between modules, and requires
 module authors to spend energy understanding the existing norms.  For ease of maintenance, this
-should be minimized and norms must be documented.
+should be minimized and norms must be documented.  This notably applies to the current makefile
+install system, which needs documentation for new /sh/ modules.
 
 The use of git results in data duplication on commit.  If this is a problem, I would
 encourage the creation of scripts to manage this.
 - Committed files may be freely deleted from LOGDIR.  They are still kept in the git history.
 - Old unneeded logs may be deleted from both the git history and LOGDIR, by wiping the object
-  from the tree.
-  [ ] TODO: a solution is needed allowing unneeded history to be cleaned up without causing
-            git fsck to fail, but still allowing verification of data integrity vs. a
-            historical git hash.  Perhaps git is not the best tool here, or perhaps a mechanism
-            can be found to provide for this.
-            note: shallow clone is not a solution everywhere, comparison with old hash is lost
-                  perhaps git can function with some accepted-as-missing object files
+  from the tree, although this breaks fscsk !  There may be a way to 'mark' objects as missing
+  and let fsck pass.
+- [ ] A better solution is to use git-annex rather than plain git.
