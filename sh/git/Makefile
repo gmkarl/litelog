@@ -5,7 +5,8 @@ install: install-module ${LOGDIR}/.git ${LOGDIR}/.gitignore
 	-systemctl start litelog-sh-git-commit.path
 	-systemctl start litelog-sh-git-commit.timer
 
-%/.git: %/
+%/.git:
+	-mkdir -p "$*"
 	git init "$*"
 
 %/.gitignore: %/
