@@ -66,7 +66,7 @@ ensure_space_free() {
       module=${module##*/}
       echo "Drive space is getting tight, asking $module to delete an unneeded file ..."
       /bin/sh "$free_space_script"
-    } || for free_space_script in "$LITElOGDIR"/*/free_space.sh
+    } || for free_space_script in "$LITELOGDIR"/*/free_space.sh
     # in case one free script failed, try all of them
     do
       /bin/sh "$free_space_script" || continue # try next script
