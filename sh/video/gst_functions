@@ -1,0 +1,13 @@
+# TODO
+
+# replace process with a recording process
+# Usage: exec_record <input_format> <input_path> <output_label>
+exec_record() {
+	fnlabel="$(date +"$LOGFILE_PREFIX")"_"%04d"_"$3"
+	fnprefix="$LOGDIR"/video/"$fnlabel"
+	
+	# produces WAAY too many files, although I suppose compress could consolidate them
+	# there's also multifilemuxsink or somesuch but it's not present on older gstreamer
+	exec gst-launch-1.0 uridecodebin ur="$1://$2" do-timestamp=true ! matroskamux writing-app=litelog/sh streamable=true !  multifilesink location="test%05d.mkv" next-file=2
+  
+}
