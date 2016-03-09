@@ -34,8 +34,8 @@ cd "$LOGDIR"/video
 		duration_is_same_epsilon "$unprocessed" "$rCOMPRESSED".incomplete 220 || continue
 
 		# copy timestamp and remove .incomplete suffix
-		touch "$rCOMPRESSED".incomplete -r "$unprocessed"
-		mv "$rCOMPESSED".incomplete "$rCOMPRESSED"
+		touch "$rCOMPRESSED".incomplete -r "$unprocessed" &&
+		mv "$rCOMPRESSED".incomplete "$rCOMPRESSED" || continue
 
 		# mark processed
 		mv "$unprocessed" "${unprocessed%_unprocessed.mkv}"_raw.mkv
