@@ -14,7 +14,7 @@ exec_record() {
   #  echo "$fnprefix"_"$ACODEC"_"$VCODEC".mkv > "$LOGDIR"/video/.gitignore # to not commit in-progress file
   #  exec ffmpeg -loglevel error -nostats -f "$1" -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_raw.mkv -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_"$ACODEC"_"$VCODEC".mkv
   #else
-    exec ffmpeg -loglevel error -nostats -f "$1" -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_unprocessed.mkv
+    exec ffmpeg -loglevel error -nostats -f "$1" -timestamps abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_unprocessed.mkv
   #fi
 }
 
