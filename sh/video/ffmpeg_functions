@@ -25,8 +25,8 @@ compress() {
   pfx="${1%_unprocessed.mkv}"
   rCOMPRESSED="${1%_unprocessed.mkv}_${ACODEC}_${VCODEC}.mkv" 
 
-  # compress to .incomplete file
-  ffmpeg -loglevel error -nostats -i "file:$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f matroska file:"$rCOMPRESSED"$2 || return 1
+  # compress to suffixed file
+  ffmpeg -loglevel error -nostats -i "file:$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -copyts -f matroska -y file:"$rCOMPRESSED"$2 || return 1
 }
 
 # output file duration in milliseconds
