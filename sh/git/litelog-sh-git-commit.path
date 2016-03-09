@@ -2,7 +2,7 @@
 Description=Litelog-Sh Git Commit Path Monitor
 
 [Path]
-PathChanged=/var/lib/litelog/video
+PathChanged=/var/lib/litelog/*
 
 [Install]
 WantedBy=default.target
