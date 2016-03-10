@@ -30,12 +30,11 @@ cd "$LOGDIR"/video
 		# see: sh/video/ffmpeg_functions
 		compress "$unprocessed" ".incomplete"|| continue
 
-		finish "$rCOMPRESSED" || continue
 		# verify full duration encoded (within 220 ms)
 		duration_is_same_epsilon "$unprocessed" "$rCOMPRESSED".incomplete 220 || continue
 
 		# copy timestamp and remove .incomplete suffix
-		touch "$rCOMPRESSED".incomplete -r "$1"
+		touch "$rCOMPRESSED".incomplete -r "$unprocessed"
 		mv "$rCOMPESSED".incomplete "$rCOMPRESSED"
 
 		# mark processed
