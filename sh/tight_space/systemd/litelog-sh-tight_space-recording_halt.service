@@ -1,0 +1,7 @@
+[Unit]
+Description=Litelog-Sh Tight Space Recording Halter
+
+[Service]
+EnvironmentFile=/etc/litelog
+ExecStart=/bin/sh ${LITELOGDIR}/sh/tight_space/systemd/recording_halt.sh
+
