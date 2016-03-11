@@ -5,10 +5,11 @@ TOPDIR := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
 LOGDIR=/var/lib/litelog
 LITELOGDIR=/usr/lib/litelog
 
-# detects and evaluates to one of systemd, openrc, cron, or none, in that order
+# detects and evaluates to one of systemd, upstart, sysvinit, cron, or none, in that order
 SERVICEMANAGER=$(firstword $(filter $(wildcard *) none,\
-$(shell systemctl status default.target >/dev/null 2>&1 && echo 'systemd')\
-$(shell rc-status default >/dev/null 2>&1 && echo 'openrc')\
+$(shell test -w /lib/systemd && echo 'systemd')\
+$(shell test -w /etc/init && echo 'upstart')\
+$(shell test -w /etc/init.d && echo 'sysvinit')\
 $(shell crontab -l >/dev/null 2>&1 && echo 'cron')\
 none))
 LITELOGSHDIR=$(LITELOGDIR)/sh
