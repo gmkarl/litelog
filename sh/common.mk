@@ -5,34 +5,46 @@ TOPDIR := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
 LOGDIR=/var/lib/litelog
 LITELOGDIR=/usr/lib/litelog
 
-# detects and evaluates to systemd, openrc, or cron, in that order
-SERVICEMANAGER=$(shell {\
-	systemctl status default.target >/dev/null 2>&1 && echo 'systemd'\
-	} || {\
-	rc-status default >/dev/null 2>&1 && echo 'openrc'\
-	} || {\
-	crontab -l >/dev/null 2>&1 && echo 'cron'\
-	} || echo 'none')
+# detects and evaluates to one of systemd, openrc, cron, or none, in that order
+SERVICEMANAGER=$(firstword $(filter $(wildcard *) none,\
+$(shell systemctl status default.target >/dev/null 2>&1 && echo 'systemd')\
+$(shell rc-status default >/dev/null 2>&1 && echo 'openrc')\
+$(shell crontab -l >/dev/null 2>&1 && echo 'cron')\
+none))
 LITELOGSHDIR=$(LITELOGDIR)/sh
 
 MODULEDIR=$(LITELOGSHDIR)/$(MODULE)
 MODULELOGDIR=$(LOGDIR)/$(MODULE)
 MODULE_FILES=$(wildcard *.sh *functions)
-SYSTEMD_FILES=$(wildcard *.service *.timer *.path)
-UDEV_FILES=$(wildcard *.rules)
+SYSTEMD_FILES=$(wildcard systemd/*.service systemd/*.timer systemd/*.path)
+SYSTEMD_UDEV_FILES=$(wildcard systemd/*.rules)
+SYSTEMD_MODULE_FILES=$(wildcard *.sh *functions)
 
 all:
 	# try make install
 
 install-base: /etc/litelog $(LITELOGSHDIR)/functions $(LOGDIR)
 
-install-module: install-base
+install-module: install-base install-module-files install-servicemanager-$(SERVICEMANAGER)
+
+install-module-files: $(MODULE_FILES)
 	mkdir -p "$(MODULEDIR)"
 	mkdir -p "$(MODULELOGDIR)"
 	-cp -va $(MODULE_FILES) "$(MODULEDIR)"
-	-cp -va $(SYSTEMD_FILES) /lib/systemd/system
-	-systemctl daemon-reload
-	-cp -va $(UDEV_FILES) /etc/udev/rules.d
+
+install-servicemanager-systemd: install-module-files $(SYSTEMD_FILES) $(SYSTEMD_UDEV_FILES) $(SYSTEMD_MODULE_FILES)
+	mkdir -p "$(MODULEDIR)/systemd"
+	-cp -va $(SYSTEMD_MODULE_FILES) "$(MODULEDIR)/systemd"
+	cp -va $(SYSTEMD_FILES) /lib/systemd/system
+	systemctl daemon-reload
+	-cp -va $(SYSTEMD_UDEV_FILES) /etc/udev/rules.d
+	for svc in $(SYSTEMD_START); do systemctl start "$svc"; done
+
+install-servicemanager-openrc:
+
+install-servicemanager-cron:
+
+install-servicemanager-none:
 
 uninstall-module:
 	-cd /lib/systemd/system && rm $(SYSTEMD_FILES)

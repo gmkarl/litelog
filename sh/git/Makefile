@@ -1,9 +1,8 @@
 MODULE=git
+SYSTEMD_START=litelog-sh-git-commit.path litelog-sh-git-commit.timer
 include ../common.mk
 
 install: install-module ${LOGDIR}/.git ${LOGDIR}/.gitignore
-	-systemctl start litelog-sh-git-commit.path
-	-systemctl start litelog-sh-git-commit.timer
 
 %/.git:
 	-mkdir -p "$*"

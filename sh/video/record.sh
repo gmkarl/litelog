@@ -2,7 +2,7 @@
 
 . /etc/litelog
 
-# LITELOGDIR defaults to /var/lib/litelog
+# LITELOGDIR defaults to /usr/lib/litelog
 . "$LITELOGDIR"/sh/functions
 
 # see: $LITELOGDIR/sh/functions

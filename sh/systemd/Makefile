@@ -1,7 +1,7 @@
 MODULE=systemd
+SYSTEMD_START=litelog-sh-systemd-confsync.path
 include ../common.mk
 
 install: install-module
-	systemctl start litelog-sh-systemd-confsync.path
 
 uninstall: uninstall-module

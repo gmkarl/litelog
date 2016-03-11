@@ -1,8 +1,7 @@
+MODULE=video
+SYSTEMD_START=litelog-sh-video-compress.path
 include ../common.mk
 
-MODULE=video
-
 install: install-module
-	-systemctl start litelog-sh-video-compress.path
 
 uninstall: uninstall-module

@@ -19,9 +19,6 @@ TIGHT_SPACE_BYTES=$((${TIGHT_SPACE_BYTES:- ROTATE_BYTES * 3 }))
 # name to give logfiles, strftime format (sh module authors can use $(date +"$LOGFILE_PREFIX") )
 LOGFILE_PREFIX="${LOGFILE_PREFIX:-%Y-%m-%dT%H:%M:%S%z_$HOSTNAME}"
 
-# nonempty if compression should be done immediately as recording
-COMPRESS_ON_FLY="${COMPRESS_ON_FLY:-}"
-
 VIDEO_BACKEND=${VIDEO_BACKEND:-ffmpeg}
 VCODEC=${VCODEC:-h264}
 
@@ -31,6 +28,8 @@ ACODEC=${ACODEC:-opus}
 
 ## convenience for sh group
 LITELOGDIR="${LITELOGDIR}/sh"
+MODULEDIR="${LITELOGDIR}/${MODULE}"
+MODULELOGDIR="${LOGDIR}/${MODULE}"
 
 free_bytes() {
   echo $(($(stat --file-system --format="%a * %S" "$LOGDIR")))
