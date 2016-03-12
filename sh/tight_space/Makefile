@@ -1,5 +1,5 @@
 MODULE=tight_space
-SYSTEMD_START=litelog-sh-tight_space-recording-halt.path
+SYSTEMD_START=litelog-sh-tight_space-recording_halt.path
 include ../common.mk
 
 install: install-module
