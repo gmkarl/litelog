@@ -9,7 +9,7 @@
 # LITELOGDIR defaults to /var/lib/litelog
 . "$LITELOGDIR"/sh/functions
 
-for unitfile in /lib/systemd/system/litelog-*.path
+for unitfile in /lib/systemd/system/litelog-sh-*.path
 do
 	unitname="${unitfile##*/}"
 	confdir=/etc/systemd/system/"$unitname".d

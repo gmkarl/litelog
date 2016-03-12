@@ -1,0 +1,14 @@
+### BEGIN INIT INFO
+# Provide:
+# Required-Start:     $remote_fs $syslog $time
+# Required-Stop:      $remote_fs $syslog
+# Default-Start:      2 3 4 5
+# Default-Stop:       0 1 6
+# Short-Description Litelog-Sh Video Compressor
+### END INIT INFO
+. /etc/litelog
+. "$LITELOGDIR"/sh/sysvinit/functions
+
+cmd="$LITELOGDIRSH/video/sysvinit/watch_compress.sh"
+
+go "$@"

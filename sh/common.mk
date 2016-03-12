@@ -7,7 +7,7 @@ LITELOGDIR=/usr/lib/litelog
 
 # detects and evaluates to one of systemd, upstart, sysvinit, cron, or none, in that order
 SERVICEMANAGER=$(firstword $(filter $(wildcard *) none,\
-$(shell test -w /lib/systemd && echo 'systemd')\
+$(shell test -w /usr/lib/systemd/systemd && systemctl list-units >/dev/null 2>&1 && echo 'systemd')\
 $(shell test -w /etc/init && echo 'upstart')\
 $(shell test -w /etc/init.d && echo 'sysvinit')\
 $(shell crontab -l >/dev/null 2>&1 && echo 'cron')\
@@ -19,7 +19,10 @@ MODULELOGDIR=$(LOGDIR)/$(MODULE)
 MODULE_FILES=$(wildcard *.sh *functions)
 SYSTEMD_FILES=$(wildcard systemd/*.service systemd/*.timer systemd/*.path)
 SYSTEMD_UDEV_FILES=$(wildcard systemd/*.rules)
-SYSTEMD_MODULE_FILES=$(wildcard *.sh *functions)
+SYSTEMD_MODULE_FILES=$(wildcard systemd/*.sh systemd/*functions)
+SYSVINIT_UDEV_FILES=$(wildcard sysvinit/*.rules)
+SYSVINIT_MODULE_FILES=$(wildcard sysvinit/*.sh sysvinit/*functions)
+SYSVINIT_FILES=$(filter-out $(SYSVINIT_UDEV_FILES) $(SYSVINIT_MODULE_FILES), $(wildcard sysvinit/*))
 
 all:
 	# try make install
@@ -36,21 +39,44 @@ install-module-files: $(MODULE_FILES)
 install-servicemanager-systemd: install-module-files $(SYSTEMD_FILES) $(SYSTEMD_UDEV_FILES) $(SYSTEMD_MODULE_FILES)
 	mkdir -p "$(MODULEDIR)/systemd"
 	-cp -va $(SYSTEMD_MODULE_FILES) "$(MODULEDIR)/systemd"
-	cp -va $(SYSTEMD_FILES) /lib/systemd/system
+	cp -va $(SYSTEMD_FILES) /usr/lib/systemd/system
 	systemctl daemon-reload
-	-cp -va $(SYSTEMD_UDEV_FILES) /etc/udev/rules.d
-	for svc in $(SYSTEMD_START); do systemctl start "$svc"; done
+	-cp -va $(SYSTEMD_UDEV_FILES) /etc/udev/rules.d && systemctl restart systemd-udevd
+	for svc in $(SYSTEMD_START); do systemctl start "$$svc"; done
 
-install-servicemanager-openrc:
+install-servicemanager-sysvinit:
+	mkdir -p "$(MODULEDIR)/sysvinit"
+	-cp -va $(SYSVINIT_MODULE_FILES) "$(MODULEDIR)/sysvinit"
+	cp -va $(SYSVINIT_FILES) /etc/init.d
+	-cp -va $(SYSVINIT_UDEV_FILES) /etc/udev/rules.d && /etc/init.d/udev reload
+	for svc in $(SYSVINIT_START); do /etc/init.d/"$$svc" restart; done
+
+install-servicemanager-upstart:
+	# IMPLEMENT IF NEEDED
 
 install-servicemanager-cron:
+	# IMPLEMENT IF NEEDED
 
 install-servicemanager-none:
 
-uninstall-module:
-	-cd /lib/systemd/system && rm $(SYSTEMD_FILES)
-	-cd /etc/udev/rules.d && rm $(UDEV_FILES)
+uninstall-module: uninstall-servicemanager-$(SERVICEMANAGER)
 	-rm -rf "$(MODULEDIR)"
+
+uninstall-servicemanager-systemd:
+	cd /usr/lib/systemd/system && rm $(SYSTEMD_FILES)
+	-cd /etc/udev/rules.d && rm $(SYSTEMD_UDEV_FILES)
+
+uninstall-servicemanager-sysvinit:
+	cd /etc/init.d && rm $(SYSVINIT_FILES)
+	-cd /etc/udev/rules.d && rm $(SYSVINIT_UDEV_FILES)
+
+uninstall-servicemanager-upstart:
+	# IMPLEMENT IF NEEDED
+
+uninstall-servicemanager-cron:
+	# IMPLEMENT IF NEEDED
+
+uninstall-servicemanager-none:
 
 /etc/litelog:
 	echo LITELOGDIR='"$(LITELOGDIR)"' > /etc/litelog;

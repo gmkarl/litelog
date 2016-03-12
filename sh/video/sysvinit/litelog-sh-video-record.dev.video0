@@ -1,0 +1,33 @@
+### BEGIN INIT INFO
+# Provide:
+# Required-Start:    $remote_fs $syslog $time
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     
+# Default-Stop:      0 1 6
+# Short-Description: Litelog-Sh Video Recorder
+### END INIT INFO
+. /etc/litelog
+. "$LITELOGDIR"/sh/sysvinit/functions
+
+device="${name#*.}"
+device="/${device//.//}"
+cmd="$LITELOGDIR/sh/video/record.sh $device"
+
+case "$1" in
+start|stop|restart|status)
+  go "$@"
+;;
+spawn)
+  newname="${name%%.*}${2////.}"
+  shift 2
+  if ! test -e /etc/init.d/"$newname"
+  then
+    ln -s "$name" /etc/init.d/"$newname"
+  fi
+  exec /etc/init.d/"$newname" "$@"
+;;
+*)
+  echo "Usage: $0 {start|stop|restart|status|spawn {device} {start|stop|restart|status}}"
+  exit 1
+;;
+esac

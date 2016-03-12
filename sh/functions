@@ -27,8 +27,8 @@ ACODEC=${ACODEC:-opus}
 
 
 ## convenience for sh group
-LITELOGDIR="${LITELOGDIR}/sh"
-MODULEDIR="${LITELOGDIR}/${MODULE}"
+LITELOGDIRSH="${LITELOGDIR}/sh"
+MODULEDIR="${LITELOGDIRSH}/${MODULE}"
 MODULELOGDIR="${LOGDIR}/${MODULE}"
 
 free_bytes() {
@@ -59,13 +59,13 @@ ensure_space_free() {
   while space_is_tight
   do
     # for video, deletes an already-compressed file
-    ls -d "$LITELOGDIR"/*/free_space.sh | sort -R | {
+    ls -d "$LITELOGDIRSH"/*/free_space.sh | sort -R | {
       read free_space_script
       module=${free_space_script%/*}
       module=${module##*/}
       echo "Drive space is getting tight, asking $module to delete an unneeded file ..."
       /bin/sh "$free_space_script"
-    } || for free_space_script in "$LITELOGDIR"/*/free_space.sh
+    } || for free_space_script in "$LITELOGDIRSH"/*/free_space.sh
     # in case one free script failed, try all of them
     do
       /bin/sh "$free_space_script" || continue # try next script
@@ -78,4 +78,4 @@ ensure_space_free() {
   done
 }
 
-. "$LITELOGDIR"/video/${VIDEO_BACKEND}_functions
+. "$LITELOGDIRSH"/video/${VIDEO_BACKEND}_functions
