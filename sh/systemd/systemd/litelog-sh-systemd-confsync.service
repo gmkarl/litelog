@@ -5,4 +5,3 @@ Description=Litelog-Sh Systemd Configuration Synchronizer
 Type=oneshot
 EnvironmentFile=/etc/litelog
 ExecStart=/bin/sh ${LITELOGDIR}/sh/systemd/confsync.sh
-

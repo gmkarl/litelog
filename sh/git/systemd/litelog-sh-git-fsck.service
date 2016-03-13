@@ -1,0 +1,10 @@
+[Unit]
+Description=Litelog-Sh Git-Annex Fscker
+
+[Service]
+EnvironmentFile=/etc/litelog
+Nice=19
+ExecStart=/bin/sh -c "cd ${LOGDIR}; exec notify-send 'git fsck status' $(git fsck --strict)"
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Litelog-Sh Git-Annex Watcher
+Conflicts=litelog-sh-git-commit.path litelog-sh-git-commit.timer litelog-sh-git-commit.service litelog-sh-git_annex-add.path litelog-sh-git_annex-add.timer litelog-sh-git_annex-add.service
+
+[Service]
+EnvironmentFile=/etc/litelog
+ExecStart=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd ${LOGDIR}; exec git annex watch --foreground"
+
+[Install]
+WantedBy=default.target

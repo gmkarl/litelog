@@ -2,8 +2,8 @@
 Description=Litelog-Sh Tight Space Recording Halt Path Monitor
 
 [Path]
-PathChanged=/var/lib/litelog
-PathChanged=/var/lib/litelog/video
+PathChanged=LOGDIR
+PathChanged=LOGDIR/*
 
 [Install]
 WantedBy=default.target

@@ -15,7 +15,6 @@ none))
 LITELOGSHDIR=$(LITELOGDIR)/sh
 
 MODULEDIR=$(LITELOGSHDIR)/$(MODULE)
-MODULELOGDIR=$(LOGDIR)/$(MODULE)
 MODULE_FILES=$(wildcard *.sh *functions)
 SYSTEMD_FILES=$(wildcard systemd/*.service systemd/*.timer systemd/*.path)
 SYSTEMD_UDEV_FILES=$(wildcard systemd/*.rules)
@@ -33,16 +32,16 @@ install-module: install-base install-module-files install-servicemanager-$(SERVI
 
 install-module-files: $(MODULE_FILES)
 	mkdir -p "$(MODULEDIR)"
-	mkdir -p "$(MODULELOGDIR)"
 	-cp -va $(MODULE_FILES) "$(MODULEDIR)"
 
 install-servicemanager-systemd: install-module-files $(SYSTEMD_FILES) $(SYSTEMD_UDEV_FILES) $(SYSTEMD_MODULE_FILES)
 	mkdir -p "$(MODULEDIR)/systemd"
 	-cp -va $(SYSTEMD_MODULE_FILES) "$(MODULEDIR)/systemd"
 	cp -va $(SYSTEMD_FILES) /usr/lib/systemd/system
+	-systemctl start litelog-sh-systemd-confsync.service
 	systemctl daemon-reload
 	-cp -va $(SYSTEMD_UDEV_FILES) /etc/udev/rules.d && systemctl restart systemd-udevd
-	for svc in $(SYSTEMD_START); do systemctl start "$$svc"; done
+	for svc in $(SYSTEMD_START); do systemctl restart "$$svc"; done
 
 install-servicemanager-sysvinit:
 	mkdir -p "$(MODULEDIR)/sysvinit"

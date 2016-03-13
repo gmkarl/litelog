@@ -6,12 +6,9 @@ install: install-module ${LOGDIR}/.git ${LOGDIR}/.gitignore
 
 %/.git:
 	-mkdir -p "$*"
-	git init "$*"
+	cd "$*"; if ! git status > /dev/null 2>&1; then git init "$*"; fi
 
-%/.gitignore: %/
+%/.gitignore: %/ /etc/litelog
 	echo '.*_lock' > $@
-	echo '*_unprocessed.*' >> $@
-	echo '*_raw.*' >> $@
-	echo '*.incomplete' >> $@
-	echo 'tmp/**' >> $@
-	
+	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_inprogress '*' '*' '*' '*' '*' >> $@
+	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_final '*' '*' '*' raw '*' >> $@

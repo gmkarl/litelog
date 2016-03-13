@@ -5,10 +5,10 @@
 . /etc/litelog
 . "$LITELOGDIR"/sh/functions
 
-cd "$LOGDIR"/video
+cd "$LOGDIR"
 (
 	flock -n 9 || exit 1
-	for unprocessed in *_unprocessed.mkv
+	for unprocessed in $(get_logfilename_inprogress video '*' '*' raw '*')
 	do
 		# if no unprocessed files exist
 		test -e "$unprocessed" || continue
@@ -28,16 +28,16 @@ cd "$LOGDIR"/video
 
 		# compress file
 		# see: sh/video/ffmpeg_functions
-		compress "$unprocessed" ".incomplete"|| continue
+		compress "$unprocessed" &&
 
 		# verify full duration encoded (within 220 ms)
-		duration_is_same_epsilon "$unprocessed" "$rCOMPRESSED".incomplete 220 || continue
+		duration_is_same_epsilon "$unprocessed" "$rCOMPRESSED" 220 &&
 
-		# copy timestamp and remove .incomplete suffix
-		touch "$rCOMPRESSED".incomplete -r "$unprocessed" &&
-		mv "$rCOMPRESSED".incomplete "$rCOMPRESSED" || continue
+		# mark final
+		finalize_inprogress_logfile "$rCOMPRESSED" &&
+		finalize_inprogress_logfile "$unprocessed" ||
 
-		# mark processed
-		mv "$unprocessed" "${unprocessed%_unprocessed.mkv}"_raw.mkv
+		# if processing fails ('||' above)
+		rm "$rCOMPRESSED"
 	done
 ) 9>.compress_video_lock

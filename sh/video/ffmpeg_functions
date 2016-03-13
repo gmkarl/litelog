@@ -5,28 +5,30 @@ fake_record() {
 }
 
 # replace process with a recording process
-# Usage: exec_record <input_format> <input_path> <output_label>
+# Usage: exec_record <input_format> <input_path>
 exec_record() {
-  fnlabel="$(date +"$LOGFILE_PREFIX")"_"%04d"_"$3"
-  fnprefix="$LOGDIR"/video/"$fnlabel"
+  fndate="$(format_date now)"-"%04d"
   #if test -n "$COMPRESS_ON_FLY"
   #then
-  #  echo "$fnprefix"_"$ACODEC"_"$VCODEC".mkv > "$LOGDIR"/video/.gitignore # to not commit in-progress file
-  #  exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_raw.mkv -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_"$ACODEC"_"$VCODEC".mkv
+  #  exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" raw mkv)" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME-$1" "$VCODEC" mkv)
   #else
-    exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$fnprefix"_unprocessed.mkv
+    exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME-$1" raw mkv)"
   #fi
 }
 
 # compress a file that was not compressed on the fly
-# Usage: compress <input_path>_unprocessed.mkv <suffix>
-# output filename is saved in $rCOMPRESSED but is stored with <suffix> appended
+# Usage: compress <input_path>
+# output filename is saved in $rCOMPRESSED
+# caller should validate and then pass to finalize_inprogress_logfile
 compress() {
-  pfx="${1%_unprocessed.mkv}"
-  rCOMPRESSED="${1%_unprocessed.mkv}_${ACODEC}_${VCODEC}.mkv" 
+  get_logfilename_components "$1"
+  rCOMPRESSED="$rPREFIX$(get_logfilename_inprogress "$rMODULE" "$rDATE" "$rHOSTNAME" "$VCODEC" mkv)"
 
   # compress to suffixed file
-  ffmpeg -loglevel error -nostats -i "file:$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -copyts -f matroska -y file:"$rCOMPRESSED"$2 || return 1
+  ffmpeg -loglevel error -nostats -i "file:$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -copyts -f matroska -y file:"$rCOMPRESSED"
+  ret=$?
+  touch "$rCOMPRESSED" -r "$1"
+  return $ret
 }
 
 # output file duration in milliseconds

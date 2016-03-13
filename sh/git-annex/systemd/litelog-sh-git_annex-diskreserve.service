@@ -1,0 +1,8 @@
+[Unit]
+Description=Litelog-Sh Git-Annex Diskspace-Reserver
+Before=litelog-sh-git_annex-sync.service
+
+[Service]
+EnvironmentFile=/etc/litelog
+ExecStart=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd ${LOGDIR}; git config --unset-all annex.diskreserve; git config --add annex.diskreserve $((TIGHT_SPACE_BYTES))"
+Type=oneshot

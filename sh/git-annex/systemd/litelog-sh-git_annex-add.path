@@ -1,5 +1,6 @@
 [Unit]
-Description=Litelog-Sh Git Commit Path Monitor
+Description=Litelog-Sh Git-Annex Add Path Monitor
+Conflicts=litelog-sh-git_annex-watch.service
 
 [Path]
 PathExistsGlob=LOGFILENAME_FINAL * * * * *

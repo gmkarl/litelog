@@ -16,15 +16,29 @@ do
 	mkdir -p "$confdir"
 
 	# replace default paths with configured ones, generate configuration file for the unit
-	sed -ne '/^\[Path\]/p; s!^\(Path.*=\)/var/lib/litelog!\1'"$LOGDIR"'!p; s!^\(Path.*=\)/usr/lib/litelog!\1'"$LITELOGDIR"'!p' "$unitfile" |
-	while read line
+	sed -ne '/^\[Path\]/p; /^Path.*=/p; ' $unitfile |
+		sed -e "s!LOGDIR!$LOGDIR!g; s!LITELOGDIR!$LITELOGDIR!g;" |
+		while read -r line
 	do
-		# expand shell globs if relevant
-		if echo "$line" | grep -q = && ! echo "$line" | grep -q Glob=
+		pfx="${line%=*}="
+		sfx="${line##*=}"
+		# replace LOGFILENAME
+		if echo "$sfx" | grep -q ^LOGFILENAME_FINAL
 		then
-			pfx="${line%=*}="
-			sfx="${line##*=}"
-			sh -c 'for entry in '"$sfx"'; do echo "'"$pfx"'$entry"; done'
+			sfx="$LOGDIR/$(echo "$sfx" | { read a b c d e f; get_logfilename_final "$b" "$c" "$d" "$e" "$f"; })"
+			line="$pfx$sfx"
+		elif echo "$sfx" | grep -q ^LOGFILENAME_INPROGRESS
+		then
+			sfx="$LOGDIR/$(echo "$sfx" | { read a b c d e f; get_logfilename_inprogress "$b" "$c" "$d" "$e" "$f"; })"
+			line="$pfx$sfx"
+		fi
+		# expand shell globs if relevant
+		if echo "$line" | grep -q = && ! echo "$pfx" | grep -q 'Glob='
+		then
+			for entry in $sfx
+			do
+				echo "$pfx""$entry"
+			done
 		else
 			echo "$line"
 		fi

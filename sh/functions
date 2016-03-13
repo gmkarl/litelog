@@ -16,8 +16,17 @@ ROTATE_BYTES=$((${ROTATE_BYTES:- 64 * 1024 * 1024 * 1024 }))
 # number of bytes of space to keep free on partition containing $LOGDIR
 TIGHT_SPACE_BYTES=$((${TIGHT_SPACE_BYTES:- ROTATE_BYTES * 3 }))
 
-# name to give logfiles, strftime format (sh module authors can use $(date +"$LOGFILE_PREFIX") )
-LOGFILE_PREFIX="${LOGFILE_PREFIX:-%Y-%m-%dT%H:%M:%S%z_$HOSTNAME}"
+# date format for logfiles, strftime format
+DATE_FORMAT="${DATE_FORMAT:-%Y-%m-%dT%H:%M:%S%z}"
+
+# name to give logs that are writing and open, printf format
+#   %s replaced with $module $date $hostname $compression $extension
+LOGFILENAME_INPROGRESS="tmp/%s_%s_%s_%s.%s"
+
+# name to give finished data, printf format
+#   %s replaced with $module $date $hostname $compression $extension
+LOGFILENAME="%s/%s_%s_%s.%s"
+
 
 VIDEO_BACKEND=${VIDEO_BACKEND:-ffmpeg}
 VCODEC=${VCODEC:-h264}
@@ -29,7 +38,49 @@ ACODEC=${ACODEC:-opus}
 ## convenience for sh group
 LITELOGDIRSH="${LITELOGDIR}/sh"
 MODULEDIR="${LITELOGDIRSH}/${MODULE}"
-MODULELOGDIR="${LOGDIR}/${MODULE}"
+
+format_date() {
+	date +"$DATE_FORMAT" -d "$*"
+}
+
+get_logfilename() {
+	_template="$1"; _module="$2"; _date="$3"; _hostname="$4"; _compression="$5"; _extension="$6"
+	_fname="$(printf "$_template" "$_module" "$_date" "$_hostname" "$_compression" "$_extension")"
+	_dir="${_fname%/*}"
+	if test "$_dir" != "$_fname"
+	then
+		mkdir -p "${LOGDIR}/${_dir}"
+	fi
+	echo "$_fname"
+}
+
+get_logfilename_inprogress() {
+	get_logfilename "$LOGFILENAME_INPROGRESS" "$@"
+}
+
+get_logfilename_final() {
+	get_logfilename "$LOGFILENAME" "$@"
+}
+
+get_logfilename_component() {
+	idx=$(($2+1))
+	echo "$1" | sed "s!\(.*\)$(get_logfilename_inprogress '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)')\$!\\$idx!; s!^\(.*\)$(get_logfilename_final '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)')\$!\\$idx!"
+}
+
+get_logfilename_components() {
+	rPREFIX="$(get_logfilename_component "$*" 0)"
+	rMODULE="$(get_logfilename_component "$*" 1)"
+	rDATE="$(get_logfilename_component "$*" 2)"
+	rHOSTNAME="$(get_logfilename_component "$*" 3)"
+	rCOMPRESSION="$(get_logfilename_component "$*" 4)"
+	rEXTENSION="$(get_logfilename_component "$*" 5)"
+}
+
+finalize_inprogress_logfile() {
+	get_logfilename_components "$*"
+	rFINALIZED="$rPREFIX$(get_logfilename_final "$rMODULE" "$rDATE" "$rHOSTNAME" "$rCOMPRESSION" "$rEXTENSION")"
+	mv "$*" "$rFINALIZED"
+}
 
 free_bytes() {
   echo $(($(stat --file-system --format="%a * %S" "$LOGDIR")))

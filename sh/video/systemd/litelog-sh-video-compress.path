@@ -2,8 +2,8 @@
 Description=Litelog-Sh Video Compression Path Monitor
 
 [Path]
-PathExistsGlob=/var/lib/litelog/video/*_unprocessed.mkv
-PathChanged=/var/lib/litelog/video
+PathExistsGlob=LOGFILENAME_INPROGRESS video * * raw *
+PathChanged=LOGDIR/video
 
 [Install]
 WantedBy=default.target
