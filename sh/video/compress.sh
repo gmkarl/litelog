@@ -8,7 +8,7 @@
 cd "$LOGDIR"
 (
 	flock -n 9 || exit 1
-	for unprocessed in $(get_logfilename_inprogress video '*' '*' raw '*')
+	for unprocessed in $(get_logfilename_inprogress video '*' '*' '*' raw '*')
 	do
 		# if no unprocessed files exist
 		test -e "$unprocessed" || continue
