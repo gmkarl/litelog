@@ -25,11 +25,11 @@ do
 		# replace LOGFILENAME
 		if echo "$sfx" | grep -q ^LOGFILENAME_FINAL
 		then
-			sfx="$LOGDIR/$(echo "$sfx" | { read a b c d e f; get_logfilename_final "$b" "$c" "$d" "$e" "$f"; })"
+			sfx="$LOGDIR/$(echo "$sfx" | { read a b c d e f g; get_logfilename_final "$b" "$c" "$d" "$e" "$f" "$g"; })"
 			line="$pfx$sfx"
 		elif echo "$sfx" | grep -q ^LOGFILENAME_INPROGRESS
 		then
-			sfx="$LOGDIR/$(echo "$sfx" | { read a b c d e f; get_logfilename_inprogress "$b" "$c" "$d" "$e" "$f"; })"
+			sfx="$LOGDIR/$(echo "$sfx" | { read a b c d e f g; get_logfilename_inprogress "$b" "$c" "$d" "$e" "$f" "$g"; })"
 			line="$pfx$sfx"
 		fi
 		# expand shell globs if relevant

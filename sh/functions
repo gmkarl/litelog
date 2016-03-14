@@ -20,12 +20,12 @@ TIGHT_SPACE_BYTES=$((${TIGHT_SPACE_BYTES:- ROTATE_BYTES * 3 }))
 DATE_FORMAT="${DATE_FORMAT:-%Y-%m-%dT%H:%M:%S%z}"
 
 # name to give logs that are writing and open, printf format
-#   %s replaced with $module $date $hostname $compression $extension
-LOGFILENAME_INPROGRESS="tmp/%s_%s_%s_%s.%s"
+#   %s replaced with $module $date $hostname $source $compression $extension
+LOGFILENAME_INPROGRESS="tmp/%s_%s_%s_%s_%s.%s"
 
 # name to give finished data, printf format
-#   %s replaced with $module $date $hostname $compression $extension
-LOGFILENAME="%s/%s_%s_%s.%s"
+#   %s replaced with $module $date $hostname $source $compression $extension
+LOGFILENAME="%s/%s_%s_%s_%s.%s"
 
 
 VIDEO_BACKEND=${VIDEO_BACKEND:-ffmpeg}
@@ -44,8 +44,8 @@ format_date() {
 }
 
 get_logfilename() {
-	_template="$1"; _module="$2"; _date="$3"; _hostname="$4"; _compression="$5"; _extension="$6"
-	_fname="$(printf "$_template" "$_module" "$_date" "$_hostname" "$_compression" "$_extension")"
+	_template="$1"; _module="$2"; _date="$3"; _hostname="$4"; _source="$5"; _compression="$6"; _extension="$7"
+	_fname="$(printf "$_template" "$_module" "$_date" "$_hostname" "$_source" "$_compression" "$_extension")"
 	_dir="${_fname%/*}"
 	if test "$_dir" != "$_fname"
 	then
@@ -64,7 +64,7 @@ get_logfilename_final() {
 
 get_logfilename_component() {
 	idx=$(($2+1))
-	echo "$1" | sed "s!\(.*\)$(get_logfilename_inprogress '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)')\$!\\$idx!; s!^\(.*\)$(get_logfilename_final '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)')\$!\\$idx!"
+	echo "$1" | sed "s!\(.*\)$(get_logfilename_inprogress '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)')\$!\\$idx!; s!^\(.*\)$(get_logfilename_final '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)')\$!\\$idx!"
 }
 
 get_logfilename_components() {
@@ -72,13 +72,14 @@ get_logfilename_components() {
 	rMODULE="$(get_logfilename_component "$*" 1)"
 	rDATE="$(get_logfilename_component "$*" 2)"
 	rHOSTNAME="$(get_logfilename_component "$*" 3)"
-	rCOMPRESSION="$(get_logfilename_component "$*" 4)"
-	rEXTENSION="$(get_logfilename_component "$*" 5)"
+	rSOURCE="$(get_logfilename_component "$*" 4)"
+	rCOMPRESSION="$(get_logfilename_component "$*" 5)"
+	rEXTENSION="$(get_logfilename_component "$*" 6)"
 }
 
 finalize_inprogress_logfile() {
 	get_logfilename_components "$*"
-	rFINALIZED="$rPREFIX$(get_logfilename_final "$rMODULE" "$rDATE" "$rHOSTNAME" "$rCOMPRESSION" "$rEXTENSION")"
+	rFINALIZED="$rPREFIX$(get_logfilename_final "$rMODULE" "$rDATE" "$rHOSTNAME" "$rSOURCE" "$rCOMPRESSION" "$rEXTENSION")"
 	mv "$*" "$rFINALIZED"
 }
 

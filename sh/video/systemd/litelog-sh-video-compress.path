@@ -2,7 +2,7 @@
 Description=Litelog-Sh Video Compression Path Monitor
 
 [Path]
-PathExistsGlob=LOGFILENAME_INPROGRESS video * * raw *
+PathExistsGlob=LOGFILENAME_INPROGRESS video * * * raw *
 PathChanged=LOGDIR/video
 
 [Install]

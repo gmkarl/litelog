@@ -10,14 +10,14 @@ install: install-module ${LOGDIR}/.git/annex ${LOGDIR}/.gitattributes
 
 %/.git/annex: %/.git %/.gitignore
 	cd "$*"; if ! git annex status > /dev/null 2>&1; then git annex init; fi
-	. /etc/litelog; . $$LITELOGDIR/sh/functions; sed -nie "\!$$(get_logfilename_inprogress '*' '*' '*' '*' '*')!!p; \!$$(get_logfilename_final '*' '*' '*' '*' '*')!!p" $*/.gitignore
+	. /etc/litelog; . $$LITELOGDIR/sh/functions; sed -nie "\!$$(get_logfilename_inprogress '*' '*' '*' '*' '*' '*')!!p; \!$$(get_logfilename_final '*' '*' '*' '*' '*' '*')!!p" $*/.gitignore
 
 %/.gitattributes:
 	echo '* annex.numcopies=2' > $@
 	echo '* annex.backends=SHA512' >> $@
 	echo '* annex.largefiles=2kb' >> $@
-	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_final '*' '*' '*' raw '* annex.numcopies=0' >> $@
-	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_inprogress '*' '*' '*' '*' '* annex.expireunused=1d'
+	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_final '*' '*' '*' '*' raw '* annex.numcopies=0' >> $@
+	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_inprogress '*' '*' '*' '*' '*' '* annex.expireunused=1d'
 
 %/.gitignore: %/
 	echo '.*_lock' > $@

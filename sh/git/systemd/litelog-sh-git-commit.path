@@ -2,7 +2,7 @@
 Description=Litelog-Sh Git Commit Path Monitor
 
 [Path]
-PathExistsGlob=LOGFILENAME_FINAL * * * * *
+PathExistsGlob=LOGFILENAME_FINAL * * * * * *
 PathChanged=LOGDIR/*
 
 [Install]

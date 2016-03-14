@@ -10,5 +10,5 @@ install: install-module ${LOGDIR}/.git ${LOGDIR}/.gitignore
 
 %/.gitignore: %/ /etc/litelog
 	echo '.*_lock' > $@
-	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_inprogress '*' '*' '*' '*' '*' >> $@
-	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_final '*' '*' '*' raw '*' >> $@
+	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_inprogress '*' '*' '*' '*' '*' '*' >> $@
+	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_final '*' '*' '*' '*' raw '*' >> $@
