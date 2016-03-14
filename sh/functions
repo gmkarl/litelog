@@ -63,8 +63,14 @@ get_logfilename_final() {
 }
 
 get_logfilename_component() {
-	idx=$(($2+1))
-	echo "$1" | sed "s!\(.*\)$(get_logfilename_inprogress '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)')\$!\\$idx!; s!^\(.*\)$(get_logfilename_final '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)' '\(.*\)')\$!\\$idx!"
+	_idx=$(($2+1))
+	_rem='\(.*\)'
+	_logfilename_inprogress_re="$(printf "$LOGFILENAME_INPROGRESS" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem")"
+	_logfilename_inprogress_re="${_logfilename_inprogress_re//./\\.}"
+	_logfilename_final_re="$(printf "$LOGFILENAME" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem")"
+	_logfilename_final_re="${_logfilename_final_re//./\\.}"
+	
+	echo "$1" | sed "s!\(.*\)$_logfilename_inprogress_re\$!\\$_idx!; s!^\(.*\)$_logfilename_final_re\$!\\$_idx!"
 }
 
 get_logfilename_components() {
@@ -84,50 +90,50 @@ finalize_inprogress_logfile() {
 }
 
 free_bytes() {
-  echo $(($(stat --file-system --format="%a * %S" "$LOGDIR")))
+	echo $(($(stat --file-system --format="%a * %S" "$LOGDIR")))
 }
 
 size_of() {
-  stat --format="%s" "$@"
+	stat --format="%s" "$@"
 }
 
 space_is_tight() {
-  test $(free_bytes) -lt $TIGHT_SPACE_BYTES
+	test $(free_bytes) -lt $TIGHT_SPACE_BYTES
 }
 
 # true if the two provided files have durations similar within epsilon milliseconds
 # Usage: duration_is_same_epsilon <path_one> <path_two> <epsilon>
 # also true if path_one has a zero duration, assuming transcoding a damaged file
 duration_is_same_epsilon() {
-  duration1=$(duration "$1")
-  duration2=$(duration "$2")
-  epsilon=$(($3))
-  delta=$((duration1 - duration2))
-  test $duration1 -eq 0 -o \( $delta -ge -$epsilon -a $delta -le $epsilon \) 
+	duration1=$(duration "$1")
+	duration2=$(duration "$2")
+	epsilon=$(($3))
+	delta=$((duration1 - duration2))
+	test $duration1 -eq 0 -o \( $delta -ge -$epsilon -a $delta -le $epsilon \) 
 }
 
 # make sure space is kept free
 ensure_space_free() {
-  while space_is_tight
-  do
-    # for video, deletes an already-compressed file
-    ls -d "$LITELOGDIRSH"/*/free_space.sh | sort -R | {
-      read free_space_script
-      module=${free_space_script%/*}
-      module=${module##*/}
-      echo "Drive space is getting tight, asking $module to delete an unneeded file ..."
-      /bin/sh "$free_space_script"
-    } || for free_space_script in "$LITELOGDIRSH"/*/free_space.sh
-    # in case one free script failed, try all of them
-    do
-      /bin/sh "$free_space_script" || continue # try next script
-      continue 2 # script succeded, check for free space again
-    done
-    # no scripts succeeded
-    # TODO: allow a config setting that starts removing objects from git history
-    echo "NO MODULE ABLE TO FREE MORE SPACE"
-    return 1
-  done
+	while space_is_tight
+	do
+		# for video, deletes an already-compressed file
+		ls -d "$LITELOGDIRSH"/*/free_space.sh | sort -R | {
+			read free_space_script
+			module=${free_space_script%/*}
+			module=${module##*/}
+			echo "Drive space is getting tight, asking $module to delete an unneeded file ..."
+			/bin/sh "$free_space_script"
+		} || for free_space_script in "$LITELOGDIRSH"/*/free_space.sh
+		# in case one free script failed, try all of them
+		do
+			/bin/sh "$free_space_script" || continue # try next script
+			continue 2 # script succeded, check for free space again
+		done
+		# no scripts succeeded
+		# TODO: allow a config setting that starts removing objects from git history
+		echo "NO MODULE ABLE TO FREE MORE SPACE"
+		return 1
+	done
 }
 
 . "$LITELOGDIRSH"/video/${VIDEO_BACKEND}_functions
