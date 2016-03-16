@@ -41,14 +41,14 @@ install-servicemanager-systemd: install-module-files $(SYSTEMD_FILES) $(SYSTEMD_
 	-systemctl start litelog-sh-systemd-confsync.service
 	systemctl daemon-reload
 	-cp -va $(SYSTEMD_UDEV_FILES) /etc/udev/rules.d && systemctl restart systemd-udevd
-	for svc in $(SYSTEMD_START); do systemctl restart "$$svc"; done
+	for svc in $(SYSTEMD_START); do systemctl restart "$$svc" || systemctl start "$$svc"; done
 
 install-servicemanager-sysvinit:
 	mkdir -p "$(MODULEDIR)/sysvinit"
 	-cp -va $(SYSVINIT_MODULE_FILES) "$(MODULEDIR)/sysvinit"
 	cp -va $(SYSVINIT_FILES) /etc/init.d
 	-cp -va $(SYSVINIT_UDEV_FILES) /etc/udev/rules.d && /etc/init.d/udev reload
-	for svc in $(SYSVINIT_START); do /etc/init.d/"$$svc" restart; done
+	for svc in $(SYSVINIT_START); do /etc/init.d/"$$svc" restart || /etc/init.d/"$$svc"; done
 
 install-servicemanager-upstart:
 	# IMPLEMENT IF NEEDED
