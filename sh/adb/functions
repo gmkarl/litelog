@@ -1,2 +1,62 @@
 
+# List serial numbers of all connected devices, one per line
+android_serials() {
+  adb devices | {
+    read header
+    while read serial rest
+    do
+      test -n "$serial" && echo "$serial"
+    done
+  }
+}
 
+
+# Fetch one or more files from a connected android phone.  Outputs inprogress filenames retrieved on stdout.
+# If "delete" is passed, the files will be deleted from the device.
+# Usage: android_fetch <module> <device serial> <label> <path> <filename regexp> <compression> [delete]
+android_fetch() {
+  module="$1"
+  device="$2"
+  label="$3"
+  path="$4"
+  regexp="$5"
+  compression="$6"
+  delete="$7"
+
+  adb -s "$device" ls "$path" | while read permissions size timestamp file
+  do
+    if test "$file" == ".." -o "$file" == "."; then continue; fi
+    if ! echo -n "$file" | grep -q "$regexp"; then continue; fi
+    permissions=$(printf %#o $((0x$permissions & 07777)))
+    size=$((0x$size))
+    timestamp=$((0x$timestamp))
+    file2="$LOGDIR/$(get_logfilename_inprogress "$module" "$(format_date "@$timestamp")" "$device" "$label" "$compression" "${file##*.}")"
+    flock "$LOGDIR/.adb_$device"_lock -c "adb -s '$device' pull '$path/$file' '$file2'" &&
+    touch -d "@$timestamp" "$file2" &&
+    if ! test "$(adb -s "$device" ls "$path" | grep " $file\$" | { read permissions size timestamp file; echo $((0x$size)); })" == "$(stat -c %s "$file2")"
+    then
+      rm "$file2"
+      false
+    fi &&
+    if test "$delete" == "delete"; then adb -s "$device" shell rm "$path"/"$file"; fi &&
+    echo "$file2" ||
+    { rm "$file2"; false; }
+  done
+}
+
+
+# Fetch one or more files from all connected android phones.  Outputs inprogress filenames retrieved on stdout.
+# If "delete" is passed, the files will be deleted from the device.
+# Files are matched with a regexp.  To match an exact filename, provide the string "^filename\$"
+# Usage: android_fetchall <module> <label> <path> <regexp> <compression> [delete]
+android_fetchall() {
+  module="$1"
+  shift
+  android_serials | {
+    while read serial
+    do
+      android_fetch "$module" "$serial" "$@" &
+    done
+    wait
+  }
+}

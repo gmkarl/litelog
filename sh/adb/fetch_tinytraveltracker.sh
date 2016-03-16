@@ -1,8 +1,10 @@
 #!/bin/sh
 
 . /etc/litelog
-"$LITELOGDIR"/sh/functions
-"$LITELOGDIRSH"/adb/functions
+. "$LITELOGDIR"/sh/functions
+. "$LITELOGDIRSH"/adb/functions
+
+android_fetchall gps tinytraveltracker /sdcard/android/data/com.rareventure.gps2/files '^gps\.db3$' sqlite3
 
 PLAN:
 [ ] don't forget to add beepme data
@@ -13,3 +15,4 @@ PLAN:
   [ ] tinytraveltracker
   [ ] voice recorder
   [ ] muse
+
