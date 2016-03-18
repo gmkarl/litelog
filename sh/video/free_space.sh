@@ -9,10 +9,10 @@ cd "$LOGDIR"
 # (compressed to the smallest size)
 min=$TIGHT_SPACE_BYTES
 best_file=""
-for raw_file in $(get_logfilename_final video * * * raw *)
+for raw_file in $(get_logfilename_final video '*' '*' '*' raw '*')
 do
   get_logfilename_components "$raw_file"
-  compressionsGlob=$(get_logfilename_final "$rMODULE" "$rDATE" "$rHOSTNAME" "$rSOURCE" * "$rEXTENSION")
+  compressionsGlob=$(get_logfilename_final "$rMODULE" "$rDATE" "$rHOSTNAME" "$rSOURCE" '*' "$rEXTENSION")
   for compressedFile in $compressionsGlob
   do
     if test "$compressedFile" == "$raw_file"; then continue; fi
