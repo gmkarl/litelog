@@ -63,22 +63,25 @@ get_logfilename_final() {
 }
 
 get_logfilename_component() {
-	_idx=$(($2+1))
+	_idx=$(($2))
 	_rem='\(.*\)'
 	_logfilename_inprogress_re="$(printf "${LOGFILENAME_INPROGRESS//./\\.}" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem")"
 	_logfilename_final_re="$(printf "${LOGFILENAME//./\\.}" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem")"
 	
-	echo "$1" | sed "s!^\(\)$_logfilename_inprogress_re\$!\\$_idx!; s!^\(\)$_logfilename_final_re\$!\\$_idx!; s!^\(.*\)$_logfilename_inprogress_re\$!\\$_idx!; s!^\(.*\)$_logfilename_final_re\$!\\$_idx!"
+	echo "$1" | sed "s!^$_logfilename_inprogress_re\$!\\$_idx!; s!^$_logfilename_final_re\$!\\$_idx!;"
 }
 
 get_logfilename_components() {
-	rPREFIX="$(get_logfilename_component "$*" 0)"
-	rMODULE="$(get_logfilename_component "$*" 1)"
-	rDATE="$(get_logfilename_component "$*" 2)"
-	rHOSTNAME="$(get_logfilename_component "$*" 3)"
-	rSOURCE="$(get_logfilename_component "$*" 4)"
-	rCOMPRESSION="$(get_logfilename_component "$*" 5)"
-	rEXTENSION="$(get_logfilename_component "$*" 6)"
+	_logfilename_full="$*"
+	_logfilename="${_logfilename_full#$LOGDIR}"
+	_logfilename="${_logfilename#/}"
+	rPREFIX="${_logfilename_full%$_logfilename}"
+	rMODULE="$(get_logfilename_component "$_logfilename" 1)"
+	rDATE="$(get_logfilename_component "$_logfilename" 2)"
+	rHOSTNAME="$(get_logfilename_component "$_logfilename" 3)"
+	rSOURCE="$(get_logfilename_component "$_logfilename" 4)"
+	rCOMPRESSION="$(get_logfilename_component "$_logfilename" 5)"
+	rEXTENSION="$(get_logfilename_component "$_logfilename" 6)"
 }
 
 finalize_inprogress_logfile() {
