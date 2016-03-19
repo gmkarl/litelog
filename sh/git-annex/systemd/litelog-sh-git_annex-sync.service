@@ -3,5 +3,5 @@ Description=Litelog-Sh Git-Annex Syncer
 
 [Service]
 EnvironmentFile=/etc/litelog
-ExecStart=/bin/sh -c "cd ${LOGDIR}; flock .git_annex_lock -c 'git annex sync --content'"
+ExecStart=/bin/sh -c "cd ${LOGDIR}; flock .git_annex_lock -c 'git annex sync --content --trust-glacier'"
 Type=oneshot
