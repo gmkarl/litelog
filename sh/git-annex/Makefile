@@ -5,6 +5,8 @@ include ../common.mk
 
 install: install-module ${LOGDIR}/.git/annex ${LOGDIR}/.gitattributes
 
+PRECIOUS: ${LOGDIR}/.gitattributes ${LOGDIR}/.gitignore
+
 %/.git:
 	-mkdir -p "$*"
 	cd "$*"; if ! git status > /dev/null 2>&1; then git init "$*"; fi
