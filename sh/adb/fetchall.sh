@@ -8,3 +8,4 @@ do
   sh "$fetcher" &
 done
 wait
+echo 'adb fetch done'

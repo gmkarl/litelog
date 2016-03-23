@@ -27,21 +27,26 @@ android_fetch() {
   do
     if test "$file" == ".." -o "$file" == "."; then continue; fi
     if ! echo -n "$file" | grep -q "$regexp"; then continue; fi
-    permissions=$(printf %#o $((0x$permissions & 07777)))
-    size=$((0x$size))
-    timestamp=$((0x$timestamp))
-    file2="$LOGDIR/$(get_logfilename_inprogress "$module" "$(format_date "@$timestamp")" "$device" "$label" "$compression" "${file##*.}")"
-    flock "$LOGDIR/.adb_$device"_lock -c "adb -s '$device' pull '$path/$file' '$file2'" &&
-    touch -d "@$timestamp" "$file2" &&
-    if ! test "$(adb -s "$device" ls "$path" | grep " ${file//./\.}\$" | { read permissions size timestamp file; echo $((0x$size)); })" == "$(stat -c %s "$file2")"
-    then
-      rm "$file2"
-      false
-      continue
-    fi &&
-    if test "$delete" == "delete"; then adb -s "$device" shell rm "$path"/"$file"; fi &&
-    echo "$file2" ||
-    { rm "$file2"; false; }
+    (
+      permissions=$(printf %#o $((0x$permissions & 07777)))
+      size=$((0x$size))
+      timestamp=$((0x$timestamp))
+      file2="$LOGDIR/$(get_logfilename_inprogress "$module" "$(format_date "@$timestamp")" "$device" "$label" "$compression" "${file##*.}")"
+      flock -n 9 &&
+      test "$(adb -s "$device" ls "$path" | grep " ${file//./\.}\$")" == "$(printf '%08x %08x %08x %s' "$permissions" "$size" "$timestamp" "$file")" &&
+      flock "$LOGDIR/.adb_$device"_lock -c "adb -s '$device' pull '$path/$file' '$file2'" &&
+      touch -d "@$timestamp" "$file2" &&
+      if ! test "$(adb -s "$device" ls "$path" | grep " ${file//./\.}\$" | { read permissions size timestamp file; echo $((0x$size)); })" == "$(stat -c %s "$file2")"
+      then
+        rm "$file2"
+        false
+        continue
+      fi &&
+      if test "$delete" == "delete"; then adb -s "$device" shell rm "$path"/"$file"; fi &&
+      echo "$file2" ||
+      { rm "$file2"; false; }
+    ) 9> "$LOGDIR/.adb_$device_${file}_lock" &&
+    rm "$LOGDIR/.adb_$device_${file}_lock"
   done
 }
 
