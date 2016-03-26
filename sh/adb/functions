@@ -28,12 +28,13 @@ android_fetch() {
     if test "$file" == ".." -o "$file" == "."; then continue; fi
     if ! echo -n "$file" | grep -q "$regexp"; then continue; fi
     (
-      permissions=$(printf %#o $((0x$permissions & 07777)))
+      orig_permissions=$((0x$permissions))
+      permissions=$(printf %#o $((orig_permissions & 07777)))
       size=$((0x$size))
       timestamp=$((0x$timestamp))
       file2="$LOGDIR/$(get_logfilename_inprogress "$module" "$(format_date "@$timestamp")" "$device" "$label" "$compression" "${file##*.}")"
       flock -n 9 &&
-      test "$(adb -s "$device" ls "$path" | grep " ${file//./\.}\$")" == "$(printf '%08x %08x %08x %s' "$permissions" "$size" "$timestamp" "$file")" &&
+      test "$(adb -s "$device" ls "$path" | grep " ${file//./\.}\$")" == "$(printf '%08x %08x %08x %s' "$orig_permissions" "$size" "$timestamp" "$file")" &&
       flock "$LOGDIR/.adb_$device"_lock -c "adb -s '$device' pull '$path/$file' '$file2'" &&
       touch -d "@$timestamp" "$file2" &&
       if ! test "$(adb -s "$device" ls "$path" | grep " ${file//./\.}\$" | { read permissions size timestamp file; echo $((0x$size)); })" == "$(stat -c %s "$file2")"
@@ -45,8 +46,8 @@ android_fetch() {
       if test "$delete" == "delete"; then adb -s "$device" shell rm "$path"/"$file"; fi &&
       echo "$file2" ||
       { rm "$file2"; false; }
-    ) 9> "$LOGDIR/.adb_$device_${file}_lock" &&
-    rm "$LOGDIR/.adb_$device_${file}_lock"
+    ) 9> "$LOGDIR/.adb_${device}_${file}_lock" &&
+    rm "$LOGDIR/.adb_${device}_${file}_lock"
   done
 }
 
@@ -62,6 +63,33 @@ android_fetchall() {
     while read serial
     do
       android_fetch "$module" "$serial" "$@" &
+    done
+    wait
+  }
+}
+
+
+# Fetch a bugreport file from all connected android phone.  Includes battery
+# statistics which may be viewed with google's battery historian.
+# Outputs inprogress filenames retrieved on stdout.
+# Usage: android_bugreport <module>
+android_bugreportall() {
+  module="$1"
+  compression="raw"
+
+  android_serials | {
+    while read device
+    do
+      (
+        file="$LOGDIR"/"$(get_logfilename_inprogress "$module" "$(format_date now)" "$device" bugreport "$compression" "txt")"
+        flock -n 9 &&
+        if adb -s "$device" bugreport > "$file" 
+        then
+          echo "$file"
+        else
+          rm "$file"
+        fi
+      ) 9> "$LOGDIR/.adb_${device}_bugreport_lock" &
     done
     wait
   }
