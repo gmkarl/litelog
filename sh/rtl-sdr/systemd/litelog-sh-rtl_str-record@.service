@@ -1,0 +1,7 @@
+[Unit]
+Description=Litelog-Sh RTL-SDR Recorder
+
+[Service]
+EnvironmentFile=/etc/litelog
+ExecStart=/bin/sh ${LITELOGDIR}/sh/rtl-sdr/record.sh "%I"
+Restart=always

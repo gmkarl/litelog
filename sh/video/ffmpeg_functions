@@ -10,9 +10,9 @@ exec_record() {
   fndate="$(format_date now)"-"%04d"
   #if test -n "$COMPRESS_ON_FLY"
   #then
-  #  exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$1" raw mkv)" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$1" "$VCODEC" mkv)
+  #  exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$1" raw mkv)" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$3" "$VCODEC" mkv)
   #else
-    exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$1" raw mkv)"
+    exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$3" raw mkv)"
   #fi
 }
 
