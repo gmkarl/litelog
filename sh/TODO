@@ -1,0 +1,13 @@
+[x] systemd services aren't getting configured
+[x] git annex add isn't happening
+    [x] switch to git annex watch
+[ ] file (for given recording device) with most recent timestamp, if timestamp is recent,
+    should not be compressed, in case it is further updated
+[x] fix that hostname is output twice in filename
+[x] files are not getting compressed
+
+[ ] publicize myself (wiki/blog)
+  [ ] branchable.com
+  ( ) freenet
+  ( ) ipfs
+  ( ) public tahoe-lafs
