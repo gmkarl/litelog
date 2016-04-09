@@ -1,0 +1,43 @@
+[ ] add defaults file
+[ ] implement syslog storage.  config systemd to forward journal to syslog, or
+    additionally read its logs, perhaps with journalctl --forward
+    the immediate purpose for this is to notify the user when devices are
+    connected which cannot be used (otherwise they may think they are
+    recording when they are not)
+      systemd forwards syslog messages to the socket /run/systemd/journal/syslog
+    I think a nice way to do this is to make a fifo that the log messages are
+    read from.  most sysloggers can write to a fifo.  dd can read only cached
+    data by using iflag=nonblock.  the fifo can be kept open by a wrapping
+    reader which spawns multiple dds if needed.
+    [ ] check if rsyslog reopens a fifo if it is closed by the reading process
+        do this by adding '*.* | /tmp/rsyslog-all.fifo'  into /etc/rsyslog.d
+
+[ ] specify user to run services as; this allows to specify
+    whose ssh configuration is used and what the owner of the files should be
+    could also (more messily?) include ssh keys in repo ...
+    might not matter too much, most users won't use ssh
+    still is better practice to have a user and not root run services
+  ^-- This will flush out my annex implementation on ovh, where there is a
+      dedicated annex user, and I would like the assistant to run all
+      the time.
+      If the annex user were the litelog user, litelog could have a unified
+      startup script to manage this, and litelogs infrastructure be used on
+      ovh.  This would also help later for adding server logs, internet cameras,
+      etc., and ovh could do video compression.
+
+      So, steps to this:
+      - change litelog to run as a given user
+        -> how will it manage its install?
+          *** For systemd, it could install as the current user, for simplicity.  Systemd allows user-specific services.
+              Perhaps this could be default behavior if not run as root.
+        -> well, its home folder will probably be either the log data folder
+           or the log binaries folder (or no home)
+       It's not complex:
+         1. a user runs all the services rather than root.  This user owns all the files that need to be written to and can read all the files that don't.
+         2. an additional service is added to run the git-annex assistant.
+         3. this setup is used on ovh
+       1 is roughly blocking 3.
+       We'll need a home folder in older to have an ssh configuration for
+       communicating between systems.  Or perhaps ssh can use a custom config dir ...
+          -> ssh can be passed -F to use a different per-user configuration file than ~/.ssh/config
+          -> git can have GIT_SSH_COMMAND in the environment set to ssh with additional parameters
