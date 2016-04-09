@@ -37,6 +37,13 @@ VCODEC=${VCODEC:-h264}
 AUDIO_BACKEND=${AUDIO_BACKEND:-ffmpeg}
 ACODEC=${ACODEC:-opus}
 
+# a binary in the environment that compresses stdin to stdout and expects -d to decompress
+TEXT_CODEC=${TEXT_CODEC:-bzip2}
+TEXT_CODEC_EXT=${TEXT_CODEC_EXT:-bz2}
+TEXT_CODEC_ARG=${TEXT_CODEC_ARG:--9}
+
+# for comparing file contents
+HASH=sha256sum
 
 ## convenience for sh group
 LITELOGDIRSH="${LITELOGDIR}/sh"

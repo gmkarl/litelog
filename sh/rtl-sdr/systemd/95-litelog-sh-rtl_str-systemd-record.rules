@@ -122,9 +122,9 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="1f4d", ATTRS{idProduct}=="d286", TAG+="rtl-
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="1f4d", ATTRS{idProduct}=="d803", TAG+="rtl-sdr"
 
 ACTION=="add", TAG=="rtl-sdr", \
-RUN="/usr/bin/systemctl start litelog-sh-rtl_sdr-record@$env{DEVNAME}", \
+RUN="/usr/bin/systemctl start litelog-sh-rtl_sdr-record@$attr{serial}", \
 OPTIONS="last_rule"
 
 ACTION=="remove", TAG=="rtl-sdr", \
-RUN+="/usr/bin/systemctl stop litelog-sh-rtl_sdr-record@$env{DEVNAME}", \
+RUN+="/usr/bin/systemctl stop litelog-sh-rtl_sdr-record@$attr{serial}", \
 OPTIONS="last_rule"

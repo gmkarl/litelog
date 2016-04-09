@@ -9,8 +9,9 @@
     read from.  most sysloggers can write to a fifo.  dd can read only cached
     data by using iflag=nonblock.  the fifo can be kept open by a wrapping
     reader which spawns multiple dds if needed.
-    [ ] check if rsyslog reopens a fifo if it is closed by the reading process
-        do this by adding '*.* | /tmp/rsyslog-all.fifo'  into /etc/rsyslog.d
+    [x] check if rsyslog reopens a fifo if it is closed by the reading process
+        do this by adding '*.* |/tmp/rsyslog-all.fifo'  into /etc/rsyslog.d
+        It does!  We can simply dd iflag=nonblock the fifo repeatedly.
 
 [ ] specify user to run services as; this allows to specify
     whose ssh configuration is used and what the owner of the files should be
@@ -41,3 +42,17 @@
        communicating between systems.  Or perhaps ssh can use a custom config dir ...
           -> ssh can be passed -F to use a different per-user configuration file than ~/.ssh/config
           -> git can have GIT_SSH_COMMAND in the environment set to ssh with additional parameters
+[x] systemd services aren't getting configured
+[x] git annex add isn't happening
+    [x] switch to git annex watch
+    [ ] switch to selectable between assistant and webapp
+[ ] file (for given recording device) with most recent timestamp, if timestamp is recent,
+    should not be compressed, in case it is further updated
+[x] fix that hostname is output twice in filename
+[x] files are not getting compressed
+
+[ ] publicize myself (wiki/blog)
+  [ ] branchable.com
+  ( ) freenet
+  ( ) ipfs
+  ( ) public tahoe-lafs
