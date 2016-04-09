@@ -31,11 +31,11 @@ install-base: /etc/litelog $(LITELOGSHDIR)/functions $(LOGDIR)
 install-module: install-base install-module-files install-servicemanager-$(SERVICEMANAGER)
 
 install-module-files: $(MODULE_FILES)
-	mkdir -p "$(MODULEDIR)"
+	-mkdir -p "$(MODULEDIR)"
 	-cp -va $(MODULE_FILES) "$(MODULEDIR)"
 
 install-servicemanager-systemd: install-module-files $(SYSTEMD_FILES) $(SYSTEMD_UDEV_FILES) $(SYSTEMD_MODULE_FILES)
-	mkdir -p "$(MODULEDIR)/systemd"
+	-mkdir -p "$(MODULEDIR)/systemd"
 	-cp -va $(SYSTEMD_MODULE_FILES) "$(MODULEDIR)/systemd"
 	cp -va $(SYSTEMD_FILES) /usr/lib/systemd/system
 	-systemctl start litelog-sh-systemd-confsync.service
@@ -44,7 +44,7 @@ install-servicemanager-systemd: install-module-files $(SYSTEMD_FILES) $(SYSTEMD_
 	for svc in $(SYSTEMD_START); do systemctl enable "$$svc"; systemctl restart "$$svc" || systemctl start "$$svc"; done
 
 install-servicemanager-sysvinit:
-	mkdir -p "$(MODULEDIR)/sysvinit"
+	-mkdir -p "$(MODULEDIR)/sysvinit"
 	-cp -va $(SYSVINIT_MODULE_FILES) "$(MODULEDIR)/sysvinit"
 	cp -va $(SYSVINIT_FILES) /etc/init.d
 	-cp -va $(SYSVINIT_UDEV_FILES) /etc/udev/rules.d && /etc/init.d/udev reload
@@ -84,9 +84,9 @@ uninstall-servicemanager-none:
 	echo HOSTNAME='"$(shell hostname)"' >> /etc/litelog
 
 $(LITELOGSHDIR)/functions: $(TOPDIR)/*functions
-	mkdir -p "$(LITELOGSHDIR)"
+	-mkdir -p "$(LITELOGSHDIR)"
 	cp -v $(TOPDIR)/*functions "$(LITELOGSHDIR)"
 
 $(LOGDIR):
-	mkdir -p "$(LOGDIR)"
+	-mkdir -p "$(LOGDIR)"
 
