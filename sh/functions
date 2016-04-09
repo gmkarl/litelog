@@ -1,6 +1,9 @@
 # this should already have been set
 # LITELOGDIR="${LITELOGDIR:-/usr/lib/litelog}"
 
+# user to run services as, should have write access to LOGDIR
+LITELOGUSER="${LITELOGUSER:-$USER}"
+
 # path in which logs are stored
 LOGDIR="${LOGDIR:-/var/log/litelog}"
 

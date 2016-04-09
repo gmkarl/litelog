@@ -78,9 +78,10 @@ uninstall-servicemanager-cron:
 uninstall-servicemanager-none:
 
 /etc/litelog:
-	echo LITELOGDIR='"$(LITELOGDIR)"' > /etc/litelog;
-	echo LOGDIR='"$(LOGDIR)"' >> /etc/litelog;
-	echo HOSTNAME='"$(shell hostname)"' >> /etc/litelog;
+	echo LITELOGUSER='"$(USER)"' > /etc/litelog
+	echo LITELOGDIR='"$(LITELOGDIR)"' >> /etc/litelog
+	echo LOGDIR='"$(LOGDIR)"' >> /etc/litelog
+	echo HOSTNAME='"$(shell hostname)"' >> /etc/litelog
 
 $(LITELOGSHDIR)/functions: $(TOPDIR)/*functions
 	mkdir -p "$(LITELOGSHDIR)"

@@ -23,7 +23,7 @@ go() {
       echo "Already started"
     else
       echo "Starting $name"
-      sudo $cmd $param >> "$log_file" 2>&1 &
+      sudo -u "$LITELOGUSER" $cmd $param >> "$log_file" 2>&1 &
       echo $! > "$pid_file"
       if ! is_running
       then
@@ -36,7 +36,12 @@ go() {
     if is_running
     then
       echo -n "Stopping $name..."
-      kill $(get_pid)
+      if test -n "$cmd_stop"
+      then
+        $cmd_stop
+      else
+        kill $(get_pid)
+      fi
       for i in {1..30}
       do
         if ! is_running
