@@ -4,6 +4,7 @@ TOPDIR := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
 # configurable
 LOGDIR=/var/lib/litelog
 LITELOGDIR=/usr/lib/litelog
+LITELOGUSER=root
 
 # detects and evaluates to one of systemd, upstart, sysvinit, cron, or none, in that order
 SERVICEMANAGER=$(firstword $(filter $(wildcard *) none,\
@@ -78,7 +79,8 @@ uninstall-servicemanager-cron:
 uninstall-servicemanager-none:
 
 /etc/litelog:
-	echo LITELOGUSER='"$(USER)"' > /etc/litelog
+	grep "^$(LITELOGUSER):" /etc/passwd
+	echo LITELOGUSER='"$(LITELOGUSER)"' > /etc/litelog
 	echo LITELOGDIR='"$(LITELOGDIR)"' >> /etc/litelog
 	echo LOGDIR='"$(LOGDIR)"' >> /etc/litelog
 	echo HOSTNAME='"$(shell hostname)"' >> /etc/litelog
