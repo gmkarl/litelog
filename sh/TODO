@@ -6,7 +6,7 @@
 		other files are immediately sent to 'storage'
 	[ ] storage is similar to 'archive'
 		files in tmp are NOT wanted
-		ALL other files are
+		ALL other files are wanted
 		
 [ ] switch to selectable between assistant and webapp
   [x] sysvinit
@@ -15,10 +15,10 @@
     [x] test setup
   [ ] systemd
     [x] test that webapp & assistant perform the watch functionality
-  	[ ] get rid of superseded functionality
-  		[ ] get rid of watch
-  		[ ] get rid of fsck
-  		[ ] get rid of sync
+  	[x] get rid of superseded functionality
+  		[x] get rid of watch
+  		[x] get rid of fsck
+  		[x] get rid of sync
     [x] provide metadata specifying dependencies between webapp and assistant
     [ ] test setup
 	[ ] ensure free_space works with assistant
@@ -44,13 +44,17 @@
 == low priority ==
 [ ] hunt down creation of .gitignoree file
 [ ] hunt down clobbering of existing .gitignore/.gitattributes files
+[ ] fix bug generating spurious '*' files
 [ ] add defaults file
 [ ] publicize myself (wiki/blog)
   [ ] branchable.com
   ( ) freenet
   ( ) ipfs
   ( ) public tahoe-lafs
+[ ] syslog
 [ ] rtl-sdr
+[ ] get litelog running on android and on ovh
+[ ] fix XO cameras
 
 == complete ==
 [x] specify user to run services as; this allows to specify
