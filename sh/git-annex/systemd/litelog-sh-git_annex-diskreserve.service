@@ -5,5 +5,5 @@ Requires=litelog-sh-systemd-confsync.service
 
 [Service]
 EnvironmentFile=/etc/litelog
-ExecStart=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd ${LOGDIR}; git config --unset-all annex.diskreserve; git config --add annex.diskreserve $((TIGHT_SPACE_BYTES))"
+ExecStart=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd \"$(readlink -f ${LOGDIR})\"; git config --unset-all annex.diskreserve; git config --add annex.diskreserve $((TIGHT_SPACE_BYTES))"
 Type=oneshot
