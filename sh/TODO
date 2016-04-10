@@ -95,3 +95,9 @@
 [x] files are not getting compressed
 [x] fix missing systemd install
 	-> this was diskreserve, it was intended to only be run and not installed
+[x] fix installation issue with symlink: if logdir is in a subdir of a repo,
+              a new repo is created inside
+    -> this wasn't the issue, already had been dealt with
+[x] fix installation issue with users: root install user is incorrect
+[x] fix service conflict: git commit services halt git-annex services
+
