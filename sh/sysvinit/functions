@@ -23,8 +23,9 @@ go() {
       echo "Already started"
     else
       echo "Starting $name"
-      sudo -u "$LITELOGUSER" $cmd $param >> "$log_file" 2>&1 &
+      su "$LITELOGUSER" -c "$cmd $param" >> "$log_file" 2>&1 &
       echo $! > "$pid_file"
+      sleep 1
       if ! is_running
       then
         echo "Unable to start, see $log_file"
