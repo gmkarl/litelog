@@ -6,9 +6,10 @@ install: install-module ${LOGDIR}/.git ${LOGDIR}/.gitignore
 
 %/.git:
 	-mkdir -p "$*"
-	cd "$*"; if ! git status > /dev/null 2>&1; then git init "$*"; fi
+	cd "$*"; if ! git status > /dev/null 2>&1; then su "$(LITELOGUSER)" -c 'git init "$*"'; fi
 
 %/.gitignore: %/ /etc/litelog
 	echo '.*_lock' > $@
 	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_inprogress '*' '*' '*' '*' '*' '*' >> $@
 	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_final '*' '*' '*' '*' raw '*' >> $@
+	chown "$(LITELOGUSER)" $@
