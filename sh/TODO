@@ -1,4 +1,24 @@
-[ ] add defaults file
+[ ] config 3 categories for git-annex systems: recording, storage, and processing
+	[ ] recording is similar to 'source'
+		files in tmp are immediately sent to 'processing'
+	[ ] processing is similar to 'transfer'
+		ALL files in tmp are wanted
+		other files are immediately sent to 'storage'
+	[ ] storage is similar to 'archive'
+		files in tmp are NOT wanted
+		ALL other files are
+		
+[ ] switch to selectable between assistant and webapp
+	[ ] get rid of superseded functionality
+		[ ] get rid of watch
+		[ ] get rid of fsck
+		[ ] get rid of sync
+		[ ] ensure free_space to works with assistant
+
+[ ] re-enable video recording in a sustainable way
+
+[ ] file (for given recording device) with most recent timestamp, if timestamp is recent, should not be compressed, in case it is further updated
+
 [ ] implement syslog storage.  config systemd to forward journal to syslog, or
     additionally read its logs, perhaps with journalctl --forward
     the immediate purpose for this is to notify the user when devices are
@@ -13,7 +33,18 @@
         do this by adding '*.* |/tmp/rsyslog-all.fifo'  into /etc/rsyslog.d
         It does!  We can simply dd iflag=nonblock the fifo repeatedly.
 
-[ ] specify user to run services as; this allows to specify
+== low priority ==
+[ ] hunt down creation of .gitignoree file
+[ ] hunt down clobbering of existing .gitignore/.gitattributes files
+[ ] add defaults file
+[ ] publicize myself (wiki/blog)
+  [ ] branchable.com
+  ( ) freenet
+  ( ) ipfs
+  ( ) public tahoe-lafs
+
+== complete ==
+[x] specify user to run services as; this allows to specify
     whose ssh configuration is used and what the owner of the files should be
     could also (more messily?) include ssh keys in repo ...
     might not matter too much, most users won't use ssh
@@ -27,11 +58,13 @@
       etc., and ovh could do video compression.
 
       So, steps to this:
-      - change litelog to run as a given user
+      [x] change litelog to run as a given user
         -> how will it manage its install?
           *** For systemd, it could install as the current user, for simplicity.  Systemd allows user-specific services.
               Perhaps this could be default behavior if not run as root.
-        -> well, its home folder will probably be either the log data folder
+	  *** no, i read that user-specific services don't start at boot.
+              it installs as current user by default and can be configured
+        [ ] well, its home folder will probably be either the log data folder
            or the log binaries folder (or no home)
        It's not complex:
          1. a user runs all the services rather than root.  This user owns all the files that need to be written to and can read all the files that don't.
@@ -45,14 +78,7 @@
 [x] systemd services aren't getting configured
 [x] git annex add isn't happening
     [x] switch to git annex watch
-    [ ] switch to selectable between assistant and webapp
-[ ] file (for given recording device) with most recent timestamp, if timestamp is recent,
-    should not be compressed, in case it is further updated
 [x] fix that hostname is output twice in filename
 [x] files are not getting compressed
-
-[ ] publicize myself (wiki/blog)
-  [ ] branchable.com
-  ( ) freenet
-  ( ) ipfs
-  ( ) public tahoe-lafs
+[x] fix missing systemd install
+	-> this was diskreserve, it was intended to only be run and not installed
