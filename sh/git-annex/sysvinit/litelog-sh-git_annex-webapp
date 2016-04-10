@@ -1,0 +1,16 @@
+### BEGIN INIT INFO
+# Provide: litelog-git_annex-assistant
+# Required-Start:    $remote_fs $syslog $network
+# Required-Stop:     $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Litelog-Sh Git-Annex Webapp
+### END INIT INFO
+. /etc/litelog
+. "$LITELOGDIR"/sh/sysvinit/functions
+
+cd "$(readlink -f "$LOGDIR")"
+
+cmd="git annex webapp --listen=localhost --trust-glacier"
+
+go "$@"

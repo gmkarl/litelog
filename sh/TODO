@@ -9,11 +9,19 @@
 		ALL other files are
 		
 [ ] switch to selectable between assistant and webapp
-	[ ] get rid of superseded functionality
-		[ ] get rid of watch
-		[ ] get rid of fsck
-		[ ] get rid of sync
-		[ ] ensure free_space to works with assistant
+  [x] sysvinit
+    [x] get rid of superseded functionality
+    [x] provide metadata specifying dependencies between webapp and assistant
+    [x] test setup
+  [ ] systemd
+    [x] test that webapp & assistant perform the watch functionality
+  	[ ] get rid of superseded functionality
+  		[ ] get rid of watch
+  		[ ] get rid of fsck
+  		[ ] get rid of sync
+    [x] provide metadata specifying dependencies between webapp and assistant
+    [ ] test setup
+	[ ] ensure free_space works with assistant
 
 [ ] re-enable video recording in a sustainable way
 
@@ -42,6 +50,7 @@
   ( ) freenet
   ( ) ipfs
   ( ) public tahoe-lafs
+[ ] rtl-sdr
 
 == complete ==
 [x] specify user to run services as; this allows to specify

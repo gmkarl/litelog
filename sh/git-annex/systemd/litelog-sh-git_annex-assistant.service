@@ -1,0 +1,11 @@
+[Unit]
+Description=Litelog-Sh Git-Annex Assistant
+Conflicts=litelog-sh-git_annex-webapp.service
+
+[Service]
+EnvironmentFile=/etc/litelog
+ExecStart=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd \"$(readlink -f ${LOGDIR})\"; exec git annex assistant --foreground --trust-glacier"
+ExecStop=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd \"$(readlink -f ${LOGDIR})\"; exec git annex assistant --stop"
+
+[Install]
+WantedBy=default.target

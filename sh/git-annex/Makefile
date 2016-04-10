@@ -1,6 +1,6 @@
 MODULE=git-annex
-SYSTEMD_START=litelog-sh-git_annex-watch.service litelog-sh-git_annex-sync.timer litelog-sh-git_annex-fsck.service litelog-sh-git_annex-diskreserve.path litelog-sh-git_annex-diskreserve.service
-SYSVINIT_START=litelog-sh-git_annex-watch litelog-sh-git_annex-diskreserve
+SYSTEMD_START=litelog-sh-git_annex-webapp.service litelog-sh-git_annex-diskreserve.path litelog-sh-git_annex-diskreserve.service
+SYSVINIT_START=litelog-sh-git_annex-webapp litelog-sh-git_annex-diskreserve
 include ../common.mk
 
 install: install-module ${LOGDIR}/.git/annex ${LOGDIR}/.gitattributes
