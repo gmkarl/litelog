@@ -11,6 +11,7 @@
 # Set user in .service files
 for unitfile in /lib/systemd/system/litelog-sh-*.service
 do
+	grep -q '^User=' "$unitfile" && continue 
 	unitname="${unitfile##*/}"
 	confdir=/etc/systemd/system/"$unitname".d
 	mkdir -p "$confdir"
