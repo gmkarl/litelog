@@ -1,9 +1,0 @@
-[unit]
-Description=Litelog-Sh Git-Annex Sync Timer
-
-[Timer]
-OnCalendar=hourly
-Persistent=true
-
-[Install]
-WantedBy=default.target

@@ -1,9 +1,0 @@
-[Unit]
-Description=Litelog-Sh Git-Annex Adder
-Conflicts=litelog-sh-git_annex-watch.service
-Before=litelog-sh-git-commit.service
-
-[Service]
-EnvironmentFile=/etc/litelog
-ExecStart=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd ${LOGDIR}; flock .git_annex_lock -c 'git annex add .'"
-Type=oneshot
