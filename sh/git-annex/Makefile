@@ -20,7 +20,6 @@ PRECIOUS: ${LOGDIR}/.gitattributes ${LOGDIR}/.gitignore
 %/.gitattributes:
 	echo '* annex.numcopies=2' > $@
 	echo '* annex.backends=SHA3_512' >> $@
-	echo '* annex.largefiles=2kb' >> $@
 	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_final '*' '*' '*' '*' raw '* annex.numcopies=0' >> $@
 	. /etc/litelog; . $$LITELOGDIR/sh/functions; get_logfilename_inprogress '*' '*' '*' '*' '*' '* annex.expireunused=1d annex.numcopies=2' >> $@
 	chown "$(LITELOGUSER)" $@
