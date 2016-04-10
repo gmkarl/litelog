@@ -3,8 +3,8 @@ Description=Litelog-Sh Tight Space Recording Halt Path Monitor
 Requires=litelog-sh-systemd-confsync.service
 
 [Path]
-PathChanged=LOGDIR
-PathChanged=LOGDIR/*
+#PathChanged=LOGDIR
+#PathChanged=LOGDIR/*
 
 [Install]
 WantedBy=default.target
