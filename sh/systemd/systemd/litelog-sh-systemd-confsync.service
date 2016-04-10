@@ -1,5 +1,6 @@
 [Unit]
 Description=Litelog-Sh Systemd Configuration Synchronizer
+Requires=remote-fs.target syslog.target
 
 [Service]
 User=root

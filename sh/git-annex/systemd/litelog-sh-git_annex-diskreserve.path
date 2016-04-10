@@ -1,5 +1,6 @@
 [Unit]
 Description=Litelog-Sh Git-Annex Diskreserve Path Monitor
+Requires=litelog-sh-systemd-confsync.service
 
 [Path]
 PathChanged=/etc/litelog

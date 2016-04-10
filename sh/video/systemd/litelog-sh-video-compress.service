@@ -1,5 +1,6 @@
 [Unit]
 Description=Litelog-Sh Video Compressor
+Requires=litelog-sh-systemd-confsync.service
 
 [Service]
 EnvironmentFile=/etc/litelog

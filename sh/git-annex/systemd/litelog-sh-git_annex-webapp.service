@@ -1,6 +1,7 @@
 [Unit]
 Description=Litelog-Sh Git-Annex Webapp
-Conflicts=litelog-sh-git_annex-assistant.service
+Conflicts=litelog-sh-git_annex-assistant.service litelog-sh-git-commit.path litelog-sh-git-commit.timer
+Requires=litelog-sh-systemd-confsync.service
 
 [Service]
 EnvironmentFile=/etc/litelog

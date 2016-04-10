@@ -1,5 +1,6 @@
 [Unit]
 Description=Litelog-Sh Video Compression Path Monitor
+Requires=litelog-sh-systemd-confsync.service
 
 [Path]
 PathExistsGlob=LOGFILENAME_INPROGRESS video * * * raw *
