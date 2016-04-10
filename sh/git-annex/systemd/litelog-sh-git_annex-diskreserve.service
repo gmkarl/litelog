@@ -1,6 +1,7 @@
 [Unit]
 Description=Litelog-Sh Git-Annex Diskspace-Reserver
-Before=litelog-sh-git_annex-sync.service
+Before=litelog-sh-git_annex-webapp.service litelog-sh-git_annex-assistant.service
+Requires=litelog-sh-systemd-confsync.service
 
 [Service]
 EnvironmentFile=/etc/litelog

@@ -1,5 +1,6 @@
 [Unit]
 Description=Litelog-Sh Systemd Configuration Monitor
+Requires=remote-fs.target syslog.target
 
 [Path]
 PathChanged=/etc/litelog

@@ -1,5 +1,6 @@
 [Unit]
 Description=Litelog-Sh Git Commit Path Monitor
+Requires=litelog-sh-systemd-confsync.service
 
 [Path]
 PathExistsGlob=LOGFILENAME_FINAL * * * * * *
