@@ -1,13 +1,8 @@
-[ ] config 3 categories for git-annex systems: recording, storage, and processing
-	[ ] recording is similar to 'source'
-		files in tmp are immediately sent to 'processing'
-	[ ] processing is similar to 'transfer'
-		ALL files in tmp are wanted
-		other files are immediately sent to 'storage'
-	[ ] storage is similar to 'archive'
-		files in tmp are NOT wanted
-		ALL other files are wanted
-		
+[ ] investigate existing media player.  it's opens source and linked from devblog
+[ ] get video compression going to such a degree that space is freed for more raw data
+[ ] find process which is failing to sync on XO under webapp (can use strace)
+  [ ] view strace, open files, environment, and working dir, to try to emulate issue and identify cause
+
 [ ] switch to selectable between assistant and webapp
   [x] sysvinit
     [x] get rid of superseded functionality
@@ -40,8 +35,19 @@
     [x] check if rsyslog reopens a fifo if it is closed by the reading process
         do this by adding '*.* |/tmp/rsyslog-all.fifo'  into /etc/rsyslog.d
         It does!  We can simply dd iflag=nonblock the fifo repeatedly.
+		
 
 == low priority ==
+
+[ ] config 3 categories for git-annex systems: recording, storage, and processing
+	[ ] recording is similar to 'source'
+		files in tmp are immediately sent to 'processing'
+	[ ] processing is similar to 'transfer'
+		ALL files in tmp are wanted
+		other files are immediately sent to 'storage'
+	[ ] storage is similar to 'archive'
+		files in tmp are NOT wanted
+		ALL other files are wanted
 [ ] hunt down creation of .gitignoree file
 [ ] hunt down clobbering of existing .gitignore/.gitattributes files
 [ ] fix bug generating spurious '*' files
