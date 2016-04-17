@@ -1,0 +1,36 @@
+Factor out common functions that may have different implementations:
+  STORAGE
+    [ ] Writing data
+    [ ] Enumerating data that has certain metadata
+    [ ] Retrieving data
+      -> will let git-annex backend 'get' the data remotely if needed
+      -> would let a database backend be swapped in for file hierarchy
+    [ ] Removing data & deciding depth of mirroring for data that all backends have given opinions for value to?
+  DEVICE DETECTION
+    [ ] Launch this service or behavior in line with this device being connected or disconnected
+  SYSTEM SERVICE MANAGEMENT
+    [ ] Provide this service such that user is familiar with starting/stopping it
+    [ ] Manage that this service is always kept running
+  FILE SYSTEM CHANGE DETECTION?
+    [ ] Callback when file matching a glob in a subdir is closed.
+  MEDIA
+    [ ] Recording
+    [ ] Compressing
+    [ ] Playing/viewing
+    [ ] Giving value to data? ('compression' values raw sources for optimal compression algorithms low because they have already been processed...
+    'event recording' values information around the events, in a simliar location, highly)
+
+  Consider: how to manage limited space?
+    Data which is
+    VALUABLE data:
+      - compressed
+      - surrounding events of interest
+      - unique recordings (only device running at place and time)
+    LESS VALUABLE data:
+      - source material for compression, no longer needed
+      - no events of interest during
+      - duplicate recordings of similar information (e.g. same location)
+
+    VALUABLE data is kept uncompressed and well-mirrored.
+    LESS VALUABLE data is compressed highly, mirrored poorly, and deleted if needed.  Each of these perhaps woudl have a threshold for occuring.
+    If NOTHING values the data it may be deleted.
