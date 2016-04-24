@@ -49,7 +49,7 @@ install-servicemanager-sysvinit:
 	-cp -va $(SYSVINIT_MODULE_FILES) "$(MODULEDIR)/sysvinit"
 	cp -va $(SYSVINIT_FILES) /etc/init.d
 	-cp -va $(SYSVINIT_UDEV_FILES) /etc/udev/rules.d && /etc/init.d/udev reload
-	for svc in $(SYSVINIT_START); do /etc/init.d/"$$svc" restart || /etc/init.d/"$$svc"; done
+	for svc in $(SYSVINIT_START); do rc-update add "$$svc"; /etc/init.d/"$$svc" restart || /etc/init.d/"$$svc"; done
 
 install-servicemanager-upstart:
 	# IMPLEMENT IF NEEDED
