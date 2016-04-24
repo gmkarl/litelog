@@ -25,7 +25,12 @@ SYSVINIT_MODULE_FILES=$(wildcard sysvinit/*.sh sysvinit/*functions)
 SYSVINIT_FILES=$(filter-out $(SYSVINIT_UDEV_FILES) $(SYSVINIT_MODULE_FILES), $(wildcard sysvinit/*))
 
 all:
-	# try make install
+	#
+	# Install with:
+	#
+	# adduser litelog --home=/usr/lib/litelog
+	# make LOGDIR=/usr/lib/litelog LITELOGUSER=litelog
+	#
 
 install-base: /etc/litelog $(LITELOGSHDIR)/functions $(LOGDIR)
 
