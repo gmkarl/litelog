@@ -5,8 +5,8 @@ Requires=litelog-sh-systemd-confsync.service
 
 [Service]
 EnvironmentFile=/etc/litelog
-ExecStart=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd \"$(readlink -f ${LOGDIR})\"; exec git annex webapp --listen=localhost --trust-glacier"
-ExecStop=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd \"$(readlink -f ${LOGDIR})\"; exec git annex assistant --stop"
+ExecStart=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd ${LOGDIR}; cd \"$(git rev-parse --show-toplevel)\"; exec git annex webapp --listen=localhost --trust-glacier"
+ExecStop=/bin/sh -c ". ${LITELOGDIR}/sh/functions; cd ${LOGDIR}; cd \"$(git rev-parse --show-toplevel)\"; exec git annex assistant --stop"
 
 [Install]
 WantedBy=default.target

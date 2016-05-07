@@ -1,6 +1,6 @@
 [ ] investigate existing media player.  it's opens source and linked from devblog
 [ ] get video compression going to such a degree that space is freed for more raw data
-[ ] find process which is failing to sync on XO under webapp (can use strace)
+[ ] find process which is failing to sync on XO under webapp (can e.g. use strace to attach to different running processes)
   [ ] view strace, open files, environment, and working dir, to try to emulate issue and identify cause
 
 [ ] switch to selectable between assistant and webapp

@@ -29,7 +29,7 @@ all:
 	# Install with:
 	#
 	# adduser litelog --home=/usr/lib/litelog
-	# make LOGDIR=/usr/lib/litelog LITELOGUSER=litelog
+	# make install LOGDIR=/usr/lib/litelog LITELOGUSER=litelog
 	#
 
 install-base: /etc/litelog $(LITELOGSHDIR)/functions $(LOGDIR)
