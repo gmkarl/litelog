@@ -29,3 +29,27 @@ The problem is:
  event logs.  They can be stored in the same pattern as other things.  systemd logs are from the systemd module.
  These are systemd event logs and can be text files that are logged.  We'll want a standard way of notifying that they're
  an error (contain interesting/important data) ... metadata isn't standardized yet.  It should be.
+
+All right, I'm implementing this impromptu.  I don't want to get derailed implementing the logging system as well, in order for the error to reach the
+user.  Perhaps I can implement some kind of stub, and have the stub send me an e-mail or something.
+
+So, some quick steps:
+  [x] write a small binary to convert between serial number and rtl-sdr id #.  this may also be the place to increment duplicate serial numbers
+      -> logic issue.
+          udev gets the serial number of the inserted device
+          conversion binary now needs to spew out the rtl-sdr id #
+          if conversion binary changes the serial number, udev will still have the old serial number (but udev doesn't care, it can use the id # now)
+          the conversion binary may have a bug/race condition.  really the user should be notified
+          let's for now just write the small binary
+          Ah-ha!
+          Conversion binary fails.  Udev script notes.  Udev script changes serial number of just-inserted device (somehow...)
+                                                        Doesn't work, changing the serial number of rtl-sdr requires the rtl-sdr ID
+                                                        Well, I can keep track of which id's are open, lock a file or something
+                                                        seems kind of messy and slow at this point
+          Excellent.  There is a usb_claim_interface error -6 if the device is already open.
+          So the conversion binary can simply return the first device which is not open.
+  [ ] review udev situation.  Write a udev rule to launch my rtl-sdr logger script when a device is inserted.  Give the device a new serial number if
+    it's a duplicate.
+  [ ] write or ensure is written a systemd and initrd script to launch my logger script and manage it
+  [ ] write the logger script to store details in the tmp/ subfolder, can copy the video logger
+
