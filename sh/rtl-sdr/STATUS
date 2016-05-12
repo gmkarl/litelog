@@ -1,0 +1,8 @@
+[ ] make systemd script to run record <== do one of these first
+[ ] make init.d script to run record
+[x] make record script
+[ ] make a way to disable generation of raw logfiles <== then one of these two
+[ ] make free space script to remove raw logs
+[ ] make compression script to condense csv files, at least to .gz, preferably
+    something smaller
+    note the logfiles can also be flac'd and xmp'd, I already made code to do this elsewhere.  could then opus the flac files ...
