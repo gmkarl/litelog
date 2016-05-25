@@ -121,7 +121,8 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="1f4d", ATTRS{idProduct}=="d286", TAG+="rtl-
 # PROlectrix DV107669 (FC0012)
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="1f4d", ATTRS{idProduct}=="d803", TAG+="rtl-sdr"
 
-ACTION=="add", TAG=="rtl-sdr",\
+# TODO: set a user here rather than world-writable.   Might take a script that filters this script
+ACTION=="add", TAG=="rtl-sdr", MODE:="0666",\
 RUN+="/bin/sh -c '. /etc/litelog; . $$LITELOGDIR/sh/rtl-sdr/systemd/systemctl-serial.sh' systemctl-serial.sh start '$attr{serial}'"
 
 ACTION=="remove", TAG=="rtl-sdr",\
