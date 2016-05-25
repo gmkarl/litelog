@@ -11,4 +11,7 @@
 
 cmd="$LITELOGDIR/sh/adb/fetchall.sh"
 
+# TODO: fix permissions and remove this line
+adb start-server
+
 go "$@"
