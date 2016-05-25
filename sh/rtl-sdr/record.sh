@@ -15,5 +15,5 @@ export RTL_LOGFILE="$LOGDIR/$(get_logfilename_inprogress rtlsdr "$date_now" "$HO
 CONSOLE_LOGFILE="$LOGDIR/$(get_logfilename_inprogress rtlsdr "$date_now" "$HOSTNAME" "$dev_serial"-console "raw" "txt")"
 POWER_LOGFILE="$LOGDIR/$(get_logfilename_inprogress rtlsdr "$date_now" "$HOSTNAME" "$dev_serial"-power "raw" "csv")"
 RTLPOWER_ARGS="rtl_power -d $dev_index -e $((ROTATE_SECONDS)) $RTLPOWER_ARGS"
-echo "> $RTLPOWER_ARGS $POWER_LOGFILE" > "$CONSOLE_LOGFILE"
-exec $RTLPOWER_ARGS "$POWER_LOGFILE" 2>> "$CONSOLE_LOGFILE"
+echo "> $RTLPOWER_ARGS $POWER_LOGFILE"
+exec $RTLPOWER_ARGS "$POWER_LOGFILE"
