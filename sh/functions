@@ -30,6 +30,8 @@ LOGFILENAME_INPROGRESS="tmp/%s_%s_%s_%s_%s.%s"
 #   %s replaced with $module $date $hostname $source $compression $extension
 LOGFILENAME="%s/%s_%s_%s_%s.%s"
 
+# Set to generate raw radio logs.  See rtl-sdr/README.md
+RADIORAW="${RADIORAW}"
 
 VIDEO_BACKEND=${VIDEO_BACKEND:-ffmpeg}
 VCODEC=${VCODEC:-h264}
