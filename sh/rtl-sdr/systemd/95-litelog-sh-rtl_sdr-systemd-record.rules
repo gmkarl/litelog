@@ -121,10 +121,8 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="1f4d", ATTRS{idProduct}=="d286", TAG+="rtl-
 # PROlectrix DV107669 (FC0012)
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="1f4d", ATTRS{idProduct}=="d803", TAG+="rtl-sdr"
 
-ACTION=="add", TAG=="rtl-sdr", \
-RUN="/usr/bin/systemctl start litelog-sh-rtl_sdr-record@$attr{serial}", \
-OPTIONS="last_rule"
+ACTION=="add", TAG=="rtl-sdr",\
+RUN+="/bin/sh -c '. /etc/litelog; . $$LITELOGDIR/sh/rtl-sdr/systemd/systemctl-serial.sh' systemctl-serial.sh start '$attr{serial}'"
 
-ACTION=="remove", TAG=="rtl-sdr", \
-RUN+="/usr/bin/systemctl stop litelog-sh-rtl_sdr-record@$attr{serial}", \
-OPTIONS="last_rule"
+ACTION=="remove", TAG=="rtl-sdr",\
+RUN+="/bin/sh -c '. /etc/litelog; . $$LITELOGDIR/sh/rtl-sdr/systemd/systemctl-serial.sh' systemctl-serial.sh stop '$attr{serial}'"
