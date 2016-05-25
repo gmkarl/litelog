@@ -11,7 +11,7 @@
 
 cd "$(readlink -f "$LOGDIR")"
 
-cmd="git annex assistant --foreground --trust-glacier"
+cmd="git annex assistant --foreground --trust-glacier --quiet"
 cmd_stop="git annex assistant --stop"
 
 go "$@"
