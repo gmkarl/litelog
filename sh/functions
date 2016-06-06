@@ -33,6 +33,9 @@ LOGFILENAME="%s/%s_%s_%s_%s.%s"
 # Set to generate raw radio logs.  See rtl-sdr/README.md
 RADIORAW="${RADIORAW}"
 
+# Set to a remote repo for git-annex to move files to when space is tight
+GITANNEX_MOVETO="${GITANNEX_MOVETO}"
+
 VIDEO_BACKEND=${VIDEO_BACKEND:-ffmpeg}
 VCODEC=${VCODEC:-h264}
 
