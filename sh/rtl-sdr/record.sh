@@ -5,6 +5,8 @@
 dev_index="$1"
 dev_serial="$(rtl_eeprom -d "$dev_index" 2>&1|sed -ne 's/Serial number:\t*\(.*\)/\1/p')"
 
+wait_for_space_free
+
 # first try RTLPOWER_ARGS_[serial] then just RTLPOWER_ARGS
 eval "RTLPOWER_ARGS=\"\${RTLPOWER_ARGS_${dev_serial}:-\$RTLPOWER_ARGS}\""
 RTLPOWER_ARGS="${RTLPOWER_ARGS:- -f 0:1700M:250k -g 50 -i 45s}"

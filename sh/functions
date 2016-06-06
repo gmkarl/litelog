@@ -152,4 +152,20 @@ ensure_space_free() {
 	done
 }
 
+# continue only when space is free, delaying an hour between checks if not
+# may optionally be provided a command to run instead of waiting
+wait_for_space_free() {
+  while ! ensure_space_free
+  do
+  	echo "Space filled on $LOGDIR ... will try again in an hour."
+  
+    if test -n "$*"
+    then
+  		"$@"
+  	else
+  		sleep $((60*60))
+  	fi
+  done
+}
+
 . "$LITELOGDIRSH"/video/${VIDEO_BACKEND}_functions

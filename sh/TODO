@@ -1,4 +1,8 @@
-[ ] investigate existing media player.  it's opens source and linked from devblog
+[ ] enable new GITANNEX_MOVETO variable
+  [x] adjust git-annex/free_space.sh to use GITANNEX_MOVETO if it exists
+    [x] can it only sync if the assistant is not running?  some way to check if assistant is running?
+  [x] move waiting for an hour to the ensure_space_free function from video/record.sh
+  [x] ensure_space_free in radio record
 [ ] get video compression going to such a degree that space is freed for more raw data
 [ ] find process which is failing to sync on XO under webapp (can e.g. use strace to attach to different running processes)
   [ ] view strace, open files, environment, and working dir, to try to emulate issue and identify cause
@@ -94,6 +98,7 @@
        communicating between systems.  Or perhaps ssh can use a custom config dir ...
           -> ssh can be passed -F to use a different per-user configuration file than ~/.ssh/config
           -> git can have GIT_SSH_COMMAND in the environment set to ssh with additional parameters
+[x] investigate existing media player.  it's opens source and linked from devblog
 [x] systemd services aren't getting configured
 [x] git annex add isn't happening
     [x] switch to git annex watch
