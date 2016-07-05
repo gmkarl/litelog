@@ -15,6 +15,7 @@ Factor out common functions that may have different implementations:
     [ ] Callback when file matching a glob in a subdir is closed.
   MEDIA
     [ ] Recording
+    [ ] Status - is recording happening?
     [ ] Compressing
     [ ] Playing/viewing
     [ ] Giving value to data? ('compression' values raw sources for optimal compression algorithms low because they have already been processed...
