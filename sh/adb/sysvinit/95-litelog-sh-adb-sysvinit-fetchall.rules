@@ -1,3 +1,3 @@
 ACTION=="add", SUBSYSTEM=="usb", \
-RUN="/etc/init.d/litelog-sh-adb-fetchall start", \
+RUN+="/bin/sh /etc/init.d/litelog-sh-adb-fetchall start", \
 OPTIONS="last_rule"
