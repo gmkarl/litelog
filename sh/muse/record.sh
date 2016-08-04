@@ -1,9 +1,12 @@
 #!/bin/sh
 
-. /etc/litelog
-. "$LITELOGDIR"/sh/functions
+if [ -e /etc/litelog ]
+then
+	. /etc/litelog
+	. "$LITELOGDIR"/sh/functions
+fi
 
-MUSE_DIR="${MUSE_DIR:-/opt/Muse}"
+MUSE_DIR="${MUSE_DIR:-/usr/local/Muse}"
 
 MAC="$1"
 
