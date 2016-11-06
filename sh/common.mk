@@ -7,7 +7,7 @@ LITELOGDIR=/usr/lib/litelog
 LITELOGUSER=root
 
 # detects and evaluates to one of systemd, upstart, sysvinit, cron, or none, in that order
-SYSTEMD_SYSTEM_PATH=$(wildcard /usr/lib/systemd/system /lib/systemd/system)
+SYSTEMD_SYSTEM_PATH=$(firstword $(wildcard /usr/lib/systemd/system /lib/systemd/system))
 SERVICEMANAGER=$(firstword $(filter $(wildcard *) none,\
 $(shell test -w $(SYSTEMD_SYSTEM_PATH)d && systemctl list-units >/dev/null 2>&1 && echo 'systemd')\
 $(shell test -w /etc/init && echo 'upstart')\
