@@ -59,22 +59,24 @@ format_date() {
 }
 
 get_logfilename() {
-	_template="$1"; _module="$2"; _date="$3"; _hostname="$4"; _source="$5"; _compression="$6"; _extension="$7"
+	_template="$1"; _perms="$2";_module="$3"; _date="$4"; _hostname="$5"; _source="$6"; _compression="$7"; _extension="$8"
 	_fname="$(printf "$_template" "$_module" "$_date" "$_hostname" "$_source" "$_compression" "$_extension")"
 	_dir="${_fname%/*}"
 	if test "$_dir" != "$_fname"
 	then
 		mkdir -p "${LOGDIR}/${_dir}"
+		chown "$LITELOGUSER" "${LOGDIR}/${_dir}"
+		chmod $_perms "${LOGDIR}/${_dir}"
 	fi
 	echo "$_fname"
 }
 
 get_logfilename_inprogress() {
-	get_logfilename "$LOGFILENAME_INPROGRESS" "$@"
+	get_logfilename "$LOGFILENAME_INPROGRESS" 777 "$@"
 }
 
 get_logfilename_final() {
-	get_logfilename "$LOGFILENAME" "$@"
+	get_logfilename "$LOGFILENAME" 755 "$@"
 }
 
 get_logfilename_component() {
