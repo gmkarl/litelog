@@ -99,4 +99,5 @@ $(LITELOGSHDIR)/functions: $(TOPDIR)/*functions
 
 $(LOGDIR):
 	-mkdir -p "$(LOGDIR)"
+	chown "$(LITELOGUSER)" "$(LOGDIR)"
 
