@@ -1,0 +1,9 @@
+[Unit]
+Description=Litelog-Sh Asciinema Compression Path Monitor
+Requires=litelog-sh-systemd-confsync.service
+
+[Path]
+#PathExistsGlob=LOGFILENAME_INPROGRESS terminal * * * raw json
+
+[Install]
+WantedBy=default.target

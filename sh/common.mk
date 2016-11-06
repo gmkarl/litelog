@@ -69,12 +69,12 @@ uninstall-module: uninstall-servicemanager-$(SERVICEMANAGER)
 	-rm -rf "$(MODULEDIR)"
 
 uninstall-servicemanager-systemd:
-	cd /usr/lib/systemd/system && rm $(SYSTEMD_FILES)
-	-cd /etc/udev/rules.d && rm $(SYSTEMD_UDEV_FILES)
+	cd "$(SYSTEMD_SYSTEM_PATH)" && rm $(SYSTEMD_FILES:systemd/%=%)
+	-cd /etc/udev/rules.d && rm $(SYSTEMD_UDEV_FILES:systemd/%=%)
 
 uninstall-servicemanager-sysvinit:
-	cd /etc/init.d && rm $(SYSVINIT_FILES)
-	-cd /etc/udev/rules.d && rm $(SYSVINIT_UDEV_FILES)
+	cd /etc/init.d && rm $(SYSVINIT_FILES:sysvinit/%=%)
+	-cd /etc/udev/rules.d && rm $(SYSVINIT_UDEV_FILES:sysvinit/%=%)
 
 uninstall-servicemanager-upstart:
 	# IMPLEMENT IF NEEDED
