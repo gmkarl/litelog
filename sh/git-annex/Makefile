@@ -3,6 +3,10 @@ SYSTEMD_START=litelog-sh-git_annex-webapp.service litelog-sh-git_annex-diskreser
 SYSVINIT_START=litelog-sh-git_annex-webapp litelog-sh-git_annex-diskreserve
 include ../common.mk
 
+dep:
+	# Detecting git-annex for content tracking
+	git-annex version >/dev/null
+
 install: install-module ${LOGDIR}/.git/annex ${LOGDIR}/.gitattributes
 	-systemctl disable litelog-sh-git-commit.path
 	-systemctl disable litelog-sh-git-commit.timer

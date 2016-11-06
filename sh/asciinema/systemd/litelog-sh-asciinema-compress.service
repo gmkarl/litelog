@@ -1,0 +1,7 @@
+[Unit]
+Description=Litelog-Sh Asciinema Compressor
+
+[Service]
+EnvironmentFile=/etc/litelog
+Type=oneshot
+ExecStart=/bin/sh ${LITELOGDIR}/sh/asciinema/compress.sh

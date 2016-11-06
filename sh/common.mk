@@ -35,7 +35,9 @@ all:
 
 install-base: /etc/litelog $(LITELOGSHDIR)/functions $(LOGDIR)
 
-install-module: install-base install-module-files install-servicemanager-$(SERVICEMANAGER)
+install-module: dep install-base install-module-files install-servicemanager-$(SERVICEMANAGER)
+
+dep:
 
 install-module-files: $(MODULE_FILES)
 	-mkdir -p "$(MODULEDIR)"
