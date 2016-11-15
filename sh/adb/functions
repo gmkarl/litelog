@@ -43,7 +43,7 @@ android_fetch() {
         false
         continue
       fi &&
-      if test "$delete" = "delete"; then adb -s "$device" shell rm "$path"/"$file" </dev/null; fi &&
+      if test "$delete" = "delete"; then adb -s "$device" shell rm "'$path"/"$file'" </dev/null; fi &&
       echo "$file2" ||
       { rm "$file2"; false; }
     ) 9> "$LOGDIR/.adb_${device}_${file}_lock" &&
