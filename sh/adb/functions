@@ -34,10 +34,10 @@ android_fetch() {
       timestamp=$((0x$timestamp))
       file2="$LOGDIR/$(get_logfilename_inprogress "$module" "$(format_date "@$timestamp")" "$device" "$label" "$compression" "${file##*.}")"
       flock -n 9 &&
-      test "$(adb -s "$device" ls "$path" | grep " ${file//./\.}\$")" = "$(printf '%08x %08x %08x %s' "$orig_permissions" "$size" "$timestamp" "$file")" &&
+      test "$(adb -s "$device" ls "$path" | grep -F " $file" | grep " $file\$")" = "$(printf '%08x %08x %08x %s' "$orig_permissions" "$size" "$timestamp" "$file")" &&
       flock "$LOGDIR/.adb_$device"_lock -c "adb -s '$device' pull '$path/$file' '$file2'" 1>&2 &&
       touch -d "@$timestamp" "$file2" &&
-      if ! test "$(adb -s "$device" ls "$path" | grep " ${file//./\.}\$" | { read permissions size timestamp file; echo $((0x$size)); })" = "$(stat -c %s "$file2")"
+      if ! test "$(adb -s "$device" ls "$path" | grep -F " $file" | grep " $file\$" | { read permissions size timestamp file; echo $((0x$size)); })" = "$(stat -c %s "$file2")"
       then
         rm "$file2"
         false
