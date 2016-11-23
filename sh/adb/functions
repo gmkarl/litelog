@@ -94,3 +94,97 @@ android_bugreportall() {
     wait
   }
 }
+
+ADB_ROOT_MODE=none
+ADB_ROOT_NC_PORT=41153
+
+# Succeeds if root access is available
+adb_check_root() {
+  device="$1"
+  status="$(adb_sh_root "$device" 'test -w /dev; echo $?' | tr -d '\r')"
+  test "$status" = "0"
+}
+
+# Tries to make root access available, if needed
+adb_ensure_root() {
+  device="$1"
+  if adb_check_root "$device"; then return 0; fi
+
+  ADB_ROOT_MODE=su-nc
+  if adb_check_root "$device"; then return 0; fi
+
+  if adb -s "$device" root
+  then
+    ADB_ROOT_MODE=adb-root
+    if adb_check_root "$device"; then return 0; fi
+  fi
+
+  while ! adb shell true
+  do 
+    # for some reason adb root failing makes adb barf for a bit
+    sleep 1
+  done
+
+  if adb -s "$device" shell busybox nc | grep -q 'Usage: nc'
+  then
+    sustatus="$(adb -s "$device" shell 'su -v; echo $?' | tail -n 1 | tr -d '\r')"
+    if test "$sustatus" = "0"
+    then
+      fifo=$(mktemp)
+      rm $fifo; mkfifo $fifo
+      adb -s "$device" shell 'su -c "nc -vlk -p '$ADB_ROOT_NC_PORT' -s 127.0.0.1 -e sh"' >$fifo&
+      read line <$fifo
+      ADB_ROOT_MODE=su-nc
+      if adb_check_root "$device"; then return 0; fi
+    fi
+  fi
+  
+  echo "Failed to acquire root." 1>&2
+  false
+}
+
+# Execute a shell command as root
+adb_sh_root() {
+  device="$1"
+  shift 1
+  case "$ADB_ROOT_MODE" in
+  su-nc)
+    adb -s "$device" shell 'echo '"'$*'"' | nc 127.0.0.1' $ADB_ROOT_NC_PORT
+    ;;
+  adb-root)
+    adb -s "$device" shell "$@"
+    ;;
+  esac
+}
+
+# Download a block device image as root
+adb_image_blockdev() {
+  device="$1"
+  dev="$2"
+  output="$3"
+  tempfile="$(mktemp)"
+  
+  size=$(adb -s "$device" shell cat /sys/class/block/$dev/size | tr -d '\r')
+  blocksperchunk=$((2048*64))
+  
+  adb_ensure_root "$device" || return 1
+  
+  offset=0
+  while test "$offset" -lt "$size"
+  do
+
+    chunkfile="$dev"_"$offset"_of_"$size"
+    adb_sh_root "$device" "dd if=/dev/block/$dev skip=$offset count=$blocksperchunk of=/dev/$chunkfile; chmod 644 /dev/$chunkfile"
+    adb -s "$device" pull /dev/$chunkfile "$tempfile"
+    dd if="$tempfile" of="$output" seek="$offset" count="$blocksperchunk" status=none
+    rm "$tempfile"
+    adb_sh_root "$device" "rm /dev/$chunkfile"
+
+    offset=$((offset + blocksperchunk))
+
+    if test "$((offset + blocksperchunk))" -gt "$size"
+    then
+      blocksperchunk=$((size - offset))
+    fi
+  done
+}
