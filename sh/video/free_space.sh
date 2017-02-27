@@ -15,7 +15,7 @@ do
   compressionsGlob=$(get_logfilename_final "$rMODULE" "$rDATE" "$rHOSTNAME" "$rSOURCE" '*' "$rEXTENSION")
   for compressedFile in $compressionsGlob
   do
-    if test "$compressedFile" == "$raw_file"; then continue; fi
+    if test "$compressedFile" = "$raw_file"; then continue; fi
     compressed_size=$(size_of "$compressedFile")
     if test $compressed_size -lt $min
     then

@@ -38,7 +38,7 @@ do
 		"$TEXT_CODEC" $TEXT_CODEC_ARG< "$unprocessed" > "$compressed" &&
 		
 		# verify
-		test "$("$TEXT_CODEC" $TEXT_CODEC_ARG -d < "$compressed" | "$HASH")" == "$("$HASH" < "$uncompressed")" &&
+		test "$("$TEXT_CODEC" $TEXT_CODEC_ARG -d < "$compressed" | "$HASH")" = "$("$HASH" < "$uncompressed")" &&
 
 		# final
 		finalize_inprogress_logfile "$compressed" &&
