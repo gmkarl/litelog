@@ -8,6 +8,7 @@ exec_record() {
 	
 	# produces WAAY too many files, although I suppose compress could consolidate them
 	# there's also multifilemuxsink or somesuch but it's not present on older gstreamer
+	# edit: related in multifile, gstsplitmuxsink .  Debian stretch is about to come out so we can use new things.
 	exec gst-launch-1.0 uridecodebin ur="$1://$2" do-timestamp=true ! matroskamux writing-app=litelog/sh streamable=true !  multifilesink location="test%05d.mkv" next-file=2
   
 }

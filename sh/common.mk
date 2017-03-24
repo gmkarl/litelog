@@ -46,6 +46,7 @@ install-module-files: $(MODULE_FILES)
 install-servicemanager-systemd: install-module-files $(SYSTEMD_FILES) $(SYSTEMD_UDEV_FILES) $(SYSTEMD_MODULE_FILES)
 	-mkdir -p "$(MODULEDIR)/systemd"
 	-cp -va $(SYSTEMD_MODULE_FILES) "$(MODULEDIR)/systemd"
+	-ln -s /bin/systemd /usr/bin/systemd # for udev rules to find it on differing systems
 	cp -va $(SYSTEMD_FILES) "$(SYSTEMD_SYSTEM_PATH)"
 	-systemctl start litelog-sh-systemd-confsync.service
 	systemctl daemon-reload

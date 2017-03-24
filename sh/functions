@@ -82,8 +82,8 @@ get_logfilename_final() {
 get_logfilename_component() {
 	_idx=$(($2))
 	_rem='\(.*\)'
-	_logfilename_inprogress_re="$(printf "${LOGFILENAME_INPROGRESS//./\\.}" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem")"
-	_logfilename_final_re="$(printf "${LOGFILENAME//./\\.}" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem")"
+	_logfilename_inprogress_re="$(printf "$(echo "$LOGFILENAME_INPROGRESS" | sed 's/\./\\./g')" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem")"
+	_logfilename_final_re="$(printf "$(echo "$LOGFILENAME" | sed 's/\./\\./g')" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem" "$_rem")"
 	
 	echo "$1" | sed "s!^$_logfilename_inprogress_re\$!\\$_idx!; s!^$_logfilename_final_re\$!\\$_idx!;"
 }
