@@ -1,0 +1,9 @@
+[Unit]
+Description=Litelog-Sh Video Storer
+Requires=litelog-sh-video-record@%i
+After=litelog-sh-video-record@%i
+
+[Service]
+EnvironmentFile=/etc/litelog
+ExecStart=/bin/sh ${LITELOGDIR}/sh/video/store.sh "%I"
+Restart=always

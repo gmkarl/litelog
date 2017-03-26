@@ -1,14 +1,58 @@
 # TODO
 
+# activate an input but do nothing with it
+# Usage: fake_record <input_format> <input_path> <time_in_seconds>
+fake_record() {
+	gst-launch-1.0 uridecodebin uri="$1"://"$2" ! fakesink &
+	sleep "$3"
+	kill $!
+}
+
 # replace process with a recording process
 # Usage: exec_record <input_format> <input_path> <output_label>
 exec_record() {
-	fnlabel="$(date +"$LOGFILE_PREFIX")"_"%04d"_"$3"
-	fnprefix="$LOGDIR"/video/"$fnlabel"
+
+	# find a port number that works
+	port=4953
+	while ! gst-launch-1.0 videotestsrc num-buffers=1 ! tcpserversink port=$port
+	do
+		port=$((port + 1))
+	done
+	echo "$port" > "$TMPDIR"/litelog-sh-video-"$3"-port
+	echo h264 > "$TMPDIR"/litelog-sh-video-"$3"-encoding
 	
-	# produces WAAY too many files, although I suppose compress could consolidate them
-	# there's also multifilemuxsink or somesuch but it's not present on older gstreamer
-	# edit: related in multifile, gstsplitmuxsink .  Debian stretch is about to come out so we can use new things.
-	exec gst-launch-1.0 uridecodebin ur="$1://$2" do-timestamp=true ! matroskamux writing-app=litelog/sh streamable=true !  multifilesink location="test%05d.mkv" next-file=2
+	exec gst-launch-1.0 uridecodebin uri="$1://$2" do-timestamp=true ! videoconvert ! x264enc bitrate=102400 byte-stream=true ! tcpserversink port="$port"
   
+}
+
+# replace process with a storage process
+# Usage: exec_store <output_label>
+exec_store() {
+	fndate="$(format_date now)"-"%04d"
+	port="$(cat "$TMPDIR"/litelog-sh-video-"$1"-port)"
+	encoding="$(cat "$TMPDIR"/litelog-sh-video-"$1"-encoding)"
+	
+	# splitmuxsink will handle time/size restraints for us, splitting to numbered files
+	# it is not in debian jessie, but is in stretch
+	
+	exec gst-launch-1.0 tcpclientsink port="$port" ! splitmuxsink muxer=matroskamux max-size-bytes="$ROTATE_BYTES" max-size-time="$ROTATE_SECONDS"000000000 location="$LOGDIR/$(get_logfilename_final video "$fndate" "$HOSTNAME" "$1" "$encoding" mkv)"
+}
+
+# replace process with viewing process
+# Usage: exec_view <output_label>
+exec_view() {
+	port="$(cat "$TMPDIR"/litelog-sh-video-"$1"-port)"
+
+	exec gst-launch-1.0 tcpclientsrc port="$port" ! decodebin ! autovideosink
+}
+
+# compress a file that was not compressed on the file
+# Usage: compress <input path?
+# output filename is saved in "$rCOMPRESSED"
+# caller should validate and then pas to finalize_inprogress_logfile
+# TODO
+
+# output file duration in milliseconds
+# USage: duration <file>
+duration() {
 }

@@ -7,6 +7,9 @@ LITELOGUSER="${LITELOGUSER:-$USER}"
 # path in which logs are stored
 LOGDIR="${LOGDIR:-/var/log/litelog}"
 
+# path in which temporary files are stored
+TMPDIR="${TMPDIR:-$(dirname $(mktemp tmp.XXXXXXXXXX -ut))}"
+
 # name of system, to label logs
 HOSTNAME="${HOSTNAME:-$(hostname)}"
 
