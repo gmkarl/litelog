@@ -19,5 +19,5 @@ do
 
 done
 
-# see: $LITELOGDIR/sh/video/ffmpeg_functions
+# see: $LITELOGDIR/sh/video/gst_functions
 exec_record v4l2 "$1" "${1##*/}"

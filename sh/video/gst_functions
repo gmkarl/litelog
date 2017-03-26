@@ -11,6 +11,7 @@ fake_record() {
 # replace process with a recording process
 # Usage: exec_record <input_format> <input_path> <output_label>
 exec_record() {
+	fndate="$(format_date now)"-"%04d"
 
 	# find a port number that works
 	port=4953
@@ -19,23 +20,12 @@ exec_record() {
 		port=$((port + 1))
 	done
 	echo "$port" > "$TMPDIR"/litelog-sh-video-"$3"-port
-	echo h264 > "$TMPDIR"/litelog-sh-video-"$3"-encoding
-	
-	exec gst-launch-1.0 uridecodebin uri="$1://$2" do-timestamp=true ! videoconvert ! x264enc bitrate=102400 byte-stream=true ! tcpserversink port="$port"
-  
-}
-
-# replace process with a storage process
-# Usage: exec_store <output_label>
-exec_store() {
-	fndate="$(format_date now)"-"%04d"
-	port="$(cat "$TMPDIR"/litelog-sh-video-"$1"-port)"
-	encoding="$(cat "$TMPDIR"/litelog-sh-video-"$1"-encoding)"
 	
 	# splitmuxsink will handle time/size restraints for us, splitting to numbered files
 	# it is not in debian jessie, but is in stretch
 	
-	exec gst-launch-1.0 tcpclientsink port="$port" ! splitmuxsink muxer=matroskamux max-size-bytes="$ROTATE_BYTES" max-size-time="$ROTATE_SECONDS"000000000 location="$LOGDIR/$(get_logfilename_final video "$fndate" "$HOSTNAME" "$1" "$encoding" mkv)"
+	# uses tee to write to files at the same time as providing raw frames on a tcp port
+	exec gst-launch-1.0 -e uridecodebin uri="$1://$2" do-timestamp=true ! videoconvert ! tee name=streamsrc ! queue ! x264enc bitrate=102400 ! splitmuxsink muxer=matroskamux max-size-bytes="$ROTATE_BYTES" max-size-time="$ROTATE_SECONDS"000000000 location="$LOGDIR/$(get_logfilename_final video "$fndate" "$HOSTNAME" "$1" h264 mkv)" streamsrc. ! queue leaky=2 ! matroskamux ! tcpserversink port="$port"
 }
 
 # replace process with viewing process
@@ -46,13 +36,14 @@ exec_view() {
 	exec gst-launch-1.0 tcpclientsrc port="$port" ! decodebin ! autovideosink
 }
 
-# compress a file that was not compressed on the file
+# compress a file that was not compressed on the fly
 # Usage: compress <input path?
 # output filename is saved in "$rCOMPRESSED"
-# caller should validate and then pas to finalize_inprogress_logfile
+# caller should validate and then pass to finalize_inprogress_logfile
 # TODO
 
 # output file duration in milliseconds
-# USage: duration <file>
+# Usage: duration <file>
 duration() {
+	echo # TODO
 }
