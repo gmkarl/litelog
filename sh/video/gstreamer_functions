@@ -8,10 +8,21 @@ fake_record() {
 	kill $!
 }
 
+gst_vencoder() {
+	if test "$VCODEC" = "vp9"
+	then
+		echo vp9enc deadline=3000000 cpu-used=5
+	else
+		echo "!!! unimplemented video codec $VCODEC !!!" 1>&2
+		exit 1
+	fi
+}
+
 # replace process with a recording process
 # Usage: exec_record <input_format> <input_path> <output_label>
 exec_record() {
 	fndate="$(format_date now)"-"%04d"
+	fname="$LOGDIR/$(get_logfilename_final video "$fndate" "$HOSTNAME" "$3" "$VCODEC" mkv)"
 
 	# find a port number that works
 	port=4953
@@ -25,7 +36,7 @@ exec_record() {
 	# it is not in debian jessie, but is in stretch
 	
 	# uses tee to write to files at the same time as providing raw frames on a tcp port
-	exec gst-launch-1.0 -e uridecodebin uri="$1://$2" do-timestamp=true ! videoconvert ! tee name=streamsrc ! queue ! x264enc bitrate=102400 ! splitmuxsink muxer=matroskamux max-size-bytes="$ROTATE_BYTES" max-size-time="$ROTATE_SECONDS"000000000 location="$LOGDIR/$(get_logfilename_final video "$fndate" "$HOSTNAME" "$1" h264 mkv)" streamsrc. ! queue leaky=2 ! matroskamux ! tcpserversink port="$port"
+	exec gst-launch-1.0 -e uridecodebin uri="$1://$2" do-timestamp=true ! videoconvert ! tee name=streamsrc ! $(gst_vencoder) ! splitmuxsink muxer=matroskamux max-size-bytes="$ROTATE_BYTES" max-size-time="$ROTATE_SECONDS"000000000 location="$fname" streamsrc. ! queue leaky=2 ! matroskamux ! tcpserversink port="$port"
 }
 
 # replace process with viewing process
@@ -34,6 +45,15 @@ exec_view() {
 	port="$(cat "$TMPDIR"/litelog-sh-video-"$1"-port)"
 
 	exec gst-launch-1.0 tcpclientsrc port="$port" ! decodebin ! autovideosink
+}
+
+# open viewers for all running streams
+view_all() {
+	for portfile in "$TMPDIR"/litelog-sh-video-*-port
+	do
+		port="$(cat "$portfile")"
+		gst-launch-1.0 tcpclientsrc port="$port" ! decodebin ! autovideosink &
+	done
 }
 
 # compress a file that was not compressed on the fly
@@ -45,5 +65,19 @@ exec_view() {
 # output file duration in milliseconds
 # Usage: duration <file>
 duration() {
-	echo # TODO
+	# matches '  Duration: 0:00:00.000.*'
+	regexp='^\s*Duration: \([0-9]*\):\([0-9]*\):\([0-9]*\)\.\([0-9][0-9][0-9]\).*$'
+	
+	# converts to milliseconds, leaving a space to identify '0' prefixes
+	replacement='(( \1*60+ \2)*60+ \3)*1000+ \4'
+	
+	# remove '0' prefixes which will improperly mark a number as octal otherwise
+	# add '0's back when needed
+	fixup='s/ 0*/ /g; s/ \*/0\*/g;'
+	
+	# mash together and output
+	echo $(($(
+		gst-discoverer-1.0 "$1" |
+		sed -ne "s/$regexp/$replacement/p" | sed -e "$fixup"
+	)))
 }

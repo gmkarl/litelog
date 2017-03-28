@@ -1,57 +1,60 @@
-# activate an input but do nothing with it
-# Usage: fake_record <input_format> <input_path> <time_in_seconds>
-fake_record() {
-  ffmpeg -loglevel error -nostats -f "$1" -i "$2" -timelimit "$3" -f null /dev/null
-}
+# TODO
 
-# replace process with a recording process
-# Usage: exec_record <input_format> <input_path>
-exec_record() {
-  fndate="$(format_date now)"-"%04d"
-  #if test -n "$COMPRESS_ON_FLY"
-  #then
-  #  exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$1" raw mkv)" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$3" "$VCODEC" mkv)
-  #else
-    exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$3" raw mkv)"
-  #fi
-}
-
-# compress a file that was not compressed on the fly
-# Usage: compress <input_path>
-# output filename is saved in $rCOMPRESSED
-# caller should validate and then pass to finalize_inprogress_logfile
-compress() {
-  get_logfilename_components "$1"
-  rCOMPRESSED="$rPREFIX$(get_logfilename_inprogress "$rMODULE" "$rDATE" "$rHOSTNAME" "$rSOURCE" "$VCODEC" mkv)"
-
-  # compress to suffixed file
-  ffmpeg -loglevel error -nostats -i "file:$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -copyts -f matroska -y file:"$rCOMPRESSED"
-  ret=$?
-  touch "$rCOMPRESSED" -r "$1"
-  return $ret
-}
-
-# output file duration in milliseconds
-# Usage: duration <file>
-duration() {
-  # ffprobe gives a lot of different kinds of durations.
-  # this code reads duration from the info log, which covers some hard to find otherwise.
-  # some are still unavailable and could be calculated by going through all the frames or
-  # dividing by the bitrate, but this is not done.
-
-  # matches '  Duration: 00:00:00.00,.*'
-  regexp='^\s*\S*: \([0-9][0-9]\):\([0-9][0-9]\):\([0-9][0-9]\)\.\([0-9][0-9]\),.*$'
-
-  # converts to milliseconds, leaving a space to identify '0' prefixes
-  replacement='(( \1*60+ \2)*60+ \3)*1000+ \4*10'
-
-  # remove '0' prefixes which will improperly mark a number as octal otherwise
-  fixup='s/ 0//g'
-
-  # mash together and output
-  echo $(($(
-    ffprobe -loglevel info -bitexact file:"$1" 2>&1 |
-    sed -ne "s/$regexp/$replacement/p" | sed -e "$fixup"
-  )))
-}
-
+# # activate an input but do nothing with it
+# # Usage: fake_record <input_format> <input_path> <time_in_seconds>
+# fake_record() {
+#   ffmpeg -loglevel error -nostats -f "$1" -i "$2" -timelimit "$3" -f null /dev/null
+# }
+# 
+# # replace process with a recording process
+# # Usage: exec_record <input_format> <input_path>
+# exec_record() {
+#   fndate="$(format_date now)"-"%04d"
+#   #if test -n "$COMPRESS_ON_FLY"
+#   #then
+#   #  exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$1" raw mkv)" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$3" "$VCODEC" mkv)
+#   #else
+#     exec ffmpeg -loglevel error -nostats -f "$1" -timestamps mono2abs -i "$2" -codec copy -map 0 -f segment -segment_time "$ROTATE_SECONDS" file:"$LOGDIR/$(get_logfilename_inprogress video "$fndate" "$HOSTNAME" "$3" raw mkv)"
+#   #fi
+# }
+# 
+# # compress a file that was not compressed on the fly
+# # Usage: compress <input_path>
+# # output filename is saved in $rCOMPRESSED
+# # caller should validate and then pass to finalize_inprogress_logfile
+# compress() {
+#   get_logfilename_components "$1"
+#   rCOMPRESSED="$rPREFIX$(get_logfilename_inprogress "$rMODULE" "$rDATE" "$rHOSTNAME" "$rSOURCE" "$VCODEC" mkv)"
+# 
+#   # compress to suffixed file
+#   ffmpeg -loglevel error -nostats -i "file:$1" -acodec "$ACODEC" -vcodec "$VCODEC" -map 0 -copyts -f matroska -y file:"$rCOMPRESSED"
+#   ret=$?
+#   touch "$rCOMPRESSED" -r "$1"
+#   return $ret
+# }
+# 
+# # output file duration in milliseconds
+# # Usage: duration <file>
+# duration() {
+#   # ffprobe gives a lot of different kinds of durations.
+#   # this code reads duration from the info log, which covers some hard to find otherwise.
+#   # some are still unavailable and could be calculated by going through all the frames or
+#   # dividing by the bitrate, but this is not done.
+# 
+#   # matches '  Duration: 00:00:00.00,.*'
+#   regexp='^\s*\S*: \([0-9][0-9]\):\([0-9][0-9]\):\([0-9][0-9]\)\.\([0-9][0-9]\),.*$'
+# 
+#   # converts to milliseconds, leaving a space to identify '0' prefixes
+#   replacement='(( \1*60+ \2)*60+ \3)*1000+ \4*10'
+# 
+#   # remove '0' prefixes which will improperly mark a number as octal otherwise
+#   # add '0's back when needed
+#   fixup='s/ 0*/ /g; s/ \*/0\*/g;'
+# 
+#   # mash together and output
+#   echo $(($(
+#     ffprobe -loglevel info -bitexact file:"$1" 2>&1 |
+#     sed -ne "s/$regexp/$replacement/p" | sed -e "$fixup"
+#   )))
+# }
+# 

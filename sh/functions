@@ -13,11 +13,11 @@ TMPDIR="${TMPDIR:-$(dirname $(mktemp tmp.XXXXXXXXXX -ut))}"
 # name of system, to label logs
 HOSTNAME="${HOSTNAME:-$(hostname)}"
 
-# for duration-based logs, duration at which to open a new log
+# duration at which to open a new log
 ROTATE_SECONDS=$((${ROTATE_SECONDS:- 60 * 60 * 2 }))
 
-# for size-based logs, size at which to open a new log (not used)
-ROTATE_BYTES=$((${ROTATE_BYTES:- 64 * 1024 * 1024 * 1024 }))
+# size at which to open a new log
+ROTATE_BYTES=$((${ROTATE_BYTES:- 16 * 1024 * 1024 * 1024 }))
 
 # number of bytes of space to keep free on partition containing $LOGDIR
 TIGHT_SPACE_BYTES=$((${TIGHT_SPACE_BYTES:- ROTATE_BYTES * 3 }))
@@ -39,10 +39,10 @@ RADIORAW="${RADIORAW}"
 # Set to a remote repo for git-annex to move files to when space is tight
 GITANNEX_MOVETO="${GITANNEX_MOVETO}"
 
-VIDEO_BACKEND=${VIDEO_BACKEND:-ffmpeg}
-VCODEC=${VCODEC:-h264}
+VIDEO_BACKEND=${VIDEO_BACKEND:-gstreamer}
+VCODEC=${VCODEC:-vp9}
 
-AUDIO_BACKEND=${AUDIO_BACKEND:-ffmpeg}
+AUDIO_BACKEND=${AUDIO_BACKEND:-gstreamer}
 ACODEC=${ACODEC:-opus}
 
 # a binary in the environment that compresses stdin to stdout and expects -d to decompress
