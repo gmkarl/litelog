@@ -33,6 +33,12 @@ LOGFILENAME_INPROGRESS="tmp/%s_%s_%s_%s_%s.%s"
 #   %s replaced with $module $date $hostname $source $compression $extension
 LOGFILENAME="%s/%s_%s_%s_%s.%s"
 
+# file format for soapy_power logs
+SOAPY_POWER_FMT="${SOAPY_POWER_FMT:-soapy_power_bin}"
+
+# soapy_power command line arguments
+SOAPY_POWER_ARGS="${SOAPY_POWER_ARGS:--f 100M:1400M}"
+
 # Set to generate raw radio logs.  See rtl-sdr/README.md
 RADIORAW="${RADIORAW}"
 

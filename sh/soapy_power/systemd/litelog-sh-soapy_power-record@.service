@@ -1,0 +1,8 @@
+[Unit]
+Description=Litelog-Sh Soapy Power Recorder
+Requires=litelog-sh-systemd-confsync.service
+
+[Service]
+EnvironmentFile=/etc/litelog
+ExecStart=/bin/sh ${LITELOGDIR}/sh/soapy_power/record.sh "%I"
+Restart=on-success

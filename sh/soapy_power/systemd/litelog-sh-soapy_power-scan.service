@@ -1,0 +1,7 @@
+[Unit]
+Description=Scan for and log from soapy_power devices
+
+[Service]
+EnvironmentFile=/etc/litelog
+Type=oneshot
+ExecStart=/bin/sh ${LITELOGDIR}/sh/soapy_power/systemd/scan.sh
