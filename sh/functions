@@ -37,7 +37,7 @@ LOGFILENAME="%s/%s_%s_%s_%s.%s"
 SOAPY_POWER_FMT="${SOAPY_POWER_FMT:-soapy_power_bin}"
 
 # soapy_power command line arguments
-SOAPY_POWER_ARGS="${SOAPY_POWER_ARGS:--f 100M:1400M}"
+SOAPY_POWER_ARGS="${SOAPY_POWER_ARGS:--f 24M:1764M -B 1 -t 60 -g 49.60}"
 
 # Set to generate raw radio logs.  See rtl-sdr/README.md
 RADIORAW="${RADIORAW}"

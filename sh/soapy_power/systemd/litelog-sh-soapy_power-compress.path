@@ -1,0 +1,9 @@
+[Unit]
+Description=Litelog-Sh Soapy_Power Compression Path Monitor
+Requires=litelog-sh-systemd-confsync.service
+
+[Path]
+#PathExistsGlob=LOGFILENAME_INPROGRESS sdr * * soapypower-* raw *
+
+[Install]
+WantedBy=default.target

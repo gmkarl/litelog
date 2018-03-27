@@ -41,4 +41,4 @@ cd "$LOGDIR"
 		# if processing fails
 		rm "$compressed"
 	done
-) 9>.compress_video_lock
+) 9>.compress_terminal_lock
