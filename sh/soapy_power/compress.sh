@@ -8,7 +8,7 @@
 cd "$LOGDIR"
 (
   flock -n 9 || exit 1
-  for uncompressed in $(get_logfilename_inprogress sdr '*' '*' 'soapypower-*' raw '*')
+  for uncompressed in $(get_logfilename_inprogress sdr '*' '*' 'soapy*power-*' raw '*')
   do
     # if no uncompressed files exist
     test -e "$uncompressed" || continue
@@ -29,7 +29,7 @@ cd "$LOGDIR"
     $TEXT_CODEC $TEXT_CODEC_ARG < "$uncompressed" > "$compressed" &&
 
     # verify correct
-    test "$("$TEXT_CODEC" $TEXT_CODEC_ARG -d < "$compressed" | "$HASH")" = "$("$HASH" < "$uncompressed")" &&
+    test "$($TEXT_CODEC $TEXT_CODEC_ARG -d < "$compressed" | "$HASH")" = "$("$HASH" < "$uncompressed")" &&
 
     # final
     finalize_inprogress_logfile "$compressed" &&
