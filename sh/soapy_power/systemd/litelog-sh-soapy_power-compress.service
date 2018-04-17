@@ -5,3 +5,4 @@ Description=Litelog-Sh Soapy_Power Compressor
 EnvironmentFile=/etc/litelog
 Type=oneshot
 ExecStart=/bin/sh ${LITELOGDIR}/sh/soapy_power/compress.sh
+Nice=19
