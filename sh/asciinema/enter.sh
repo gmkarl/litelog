@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if test -n "$PS1" -a -z "$ASCIINEMA_REC"
+if test -n "$PS1" -a -n "$TERM" -a -z "$ASCIINEMA_REC"
 then
 	if asciinema rec -h | grep filename >/dev/null
 	then
