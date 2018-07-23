@@ -23,7 +23,7 @@ ROTATE_BYTES=$((${ROTATE_BYTES:- 16 * 1024 * 1024 * 1024 }))
 TIGHT_SPACE_BYTES=$((${TIGHT_SPACE_BYTES:- ROTATE_BYTES * 3 }))
 
 # date format for logfiles, strftime format
-DATE_FORMAT="${DATE_FORMAT:-%Y-%m-%dT%H:%M:%S%z}"
+DATE_FORMAT="${DATE_FORMAT:-%Y-%m/%dT%H:%M:%S%z}"
 
 # name to give logs that are writing and open, printf format
 #   %s replaced with $module $date $hostname $source $compression $extension
