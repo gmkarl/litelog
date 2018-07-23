@@ -44,7 +44,7 @@ exec_record() {
 exec_view() {
 	port="$(cat "$TMPDIR"/litelog-sh-video-"$1"-port)"
 
-	exec gst-launch-1.0 tcpclientsrc port="$port" ! decodebin ! autovideosink
+	exec gst-launch-1.0 tcpclientsrc port="$port" ! decodebin ! videoconvert ! autovideosink
 }
 
 # open viewers for all running streams
@@ -52,7 +52,7 @@ view_all() {
 	for portfile in "$TMPDIR"/litelog-sh-video-*-port
 	do
 		port="$(cat "$portfile")"
-		gst-launch-1.0 tcpclientsrc port="$port" ! decodebin ! autovideosink &
+		gst-launch-1.0 tcpclientsrc port="$port" ! decodebin ! videoconvert ! autovideosink &
 	done
 }
 
