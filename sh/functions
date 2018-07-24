@@ -36,6 +36,9 @@ LOGFILENAME_INPROGRESS="tmp/%s_%s_%s_%s_%s.%s"
 #   %s replaced with $module $date $hostname $source $compression $extension
 LOGFILENAME="%s/%s_%s_%s_%s.%s"
 
+# network address to bind to for live video feeds
+LISTEN_HOST="${LISTEN_HOST:-127.0.0.1}"
+
 # file format for soapy_power logs
 SOAPY_POWER_FMT="${SOAPY_POWER_FMT:-soapy_power_bin}"
 
