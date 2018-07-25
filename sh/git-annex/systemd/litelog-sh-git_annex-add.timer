@@ -1,0 +1,10 @@
+[Unit]
+Description=Litelog-Sh Git-Annex Add Timer
+Conflicts=litelog-sh-git_annex-webapp.service litelog-sh-git_annex-assistant.service litelog-sh-git-commit.path litelog-sh-git-commit.timer
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=default.target

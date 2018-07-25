@@ -5,5 +5,5 @@ Requires=litelog-sh-systemd-confsync.service
 [Service]
 EnvironmentFile=/etc/litelog
 ExecStart=-/bin/sh -c "cd ${LOGDIR}; git annex add ."
-ExecStart=/bin/sh -c "cd ${LOGDIR}; git annex sync --trust-glacier"
+ExecStart=/bin/sh -c "cd ${LOGDIR}; git annex sync --content --trust-glacier"
 Type=oneshot

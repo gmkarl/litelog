@@ -1,6 +1,6 @@
 [Unit]
 Description=Litelog-Sh Git-Annex Assistant
-Conflicts=litelog-sh-git_annex-webapp.service litelog-sh-git-commit.path litelog-sh-git-commit.timer
+Conflicts=litelog-sh-git_annex-webapp.service litelog-sh-git-commit.path litelog-sh-git-commit.timer litelog-sh-git_annex-add.timer
 Requires=litelog-sh-systemd-confsync.service
 
 [Service]
