@@ -41,7 +41,7 @@ exec_record() {
 	# it is not in debian jessie, but is in stretch
 	
 	# uses tee to write to files at the same time as providing raw frames on a tcp port
-	exec nice -n -20 gst-launch-1.0 -e ${gst_vsrc} ! tee name=streamsrc ${gst_vencoder} ! queue ! splitmuxsink muxer=matroskamux max-size-bytes="$ROTATE_BYTES" max-size-time="$ROTATE_SECONDS"000000000 location="$fname" streamsrc. ! queue leaky=2 ! matroskamux ! tcpserversink host="$LISTEN_HOST" port="$port"
+	exec gst-launch-1.0 -e ${gst_vsrc} ! tee name=streamsrc ${gst_vencoder} ! splitmuxsink muxer=matroskamux max-size-bytes="$ROTATE_BYTES" max-size-time="$ROTATE_SECONDS"000000000 location="$fname" streamsrc. ! queue leaky=2 ! matroskamux ! tcpserversink host="$LISTEN_HOST" port="$port"
 }
 
 # replace process with viewing process

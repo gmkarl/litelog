@@ -6,6 +6,7 @@ Requires=litelog-sh-systemd-confsync.service
 EnvironmentFile=/etc/litelog
 ExecStart=/bin/sh ${LITELOGDIR}/sh/video/record.sh "%I"
 Restart=always
+Nice=-19
 
 [Install]
 WantedBy=default.target
