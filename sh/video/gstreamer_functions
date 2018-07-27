@@ -16,7 +16,7 @@ exec_record() {
 	then
 		VCODEC=h264
 		gst_vencoder=''
-		gst_vsrc="rpicamsrc preview=false annotation-mode=$((0x40c)) annotation-text-size=16 bitrate=0 quantisation-parameter=$((51 - QUALITY_PCT/2)) keyframe-interval=$((42*30)) ! video/x-h264,width=1296,height=972,framerate=42/1,profile=high ! h264parse"
+		gst_vsrc="rpicamsrc preview=false annotation-mode=$((0x40c)) annotation-text-size=16 bitrate=0 quantisation-parameter=$((51 - QUALITY_PCT/2)) keyframe-interval=$((42*4)) ! video/x-h264,width=1296,height=972,framerate=42/1,profile=high ! h264parse"
 	else
 		gst_vsrc="uridecodebin uri=$1://$2 do-timestamp=true ! videoconvert"
 		if test "$VCODEC" = "vp9"
