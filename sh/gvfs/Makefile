@@ -1,5 +1,5 @@
 MODULE=gvfs
-SYSTEMD_START=litelog-sh-gvfs-move.path
+SYSTEMD_START=litelog-sh-gvfs-move.timer
 #SYSVINIT_START
 include ../common.mk
 

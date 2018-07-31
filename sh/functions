@@ -42,6 +42,9 @@ LOGFILENAME="%s/%s_%s_%s_%s.%s"
 # network address to bind to for live video feeds
 LISTEN_HOST="${LISTEN_HOST:-127.0.0.1}"
 
+# path to monitor for gvfs mounts
+GVFSDIR="/run/user/1000/gvfs"
+
 # file format for soapy_power logs
 SOAPY_POWER_FMT="${SOAPY_POWER_FMT:-soapy_power_bin}"
 

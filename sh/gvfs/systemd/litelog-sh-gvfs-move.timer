@@ -1,0 +1,11 @@
+# Can't use a path watch here because root can't actually read user gvfs mounts !
+
+[Unit]
+Description=Litelog-Sh GVFS File Copying Timer
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=default.target

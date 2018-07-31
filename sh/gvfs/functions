@@ -1,10 +1,8 @@
-GVFS_PATH="${XDG_RUNTIME_DIR}/gvfs"
-
 # list gvfs mounts available, one per line
 gvfs_mount_info() {
-	ls $XDG_RUNTIME_DIR/gvfs | while read subdir
+	ls "$GVFSDIR" | while read subdir
 	do
-		echo -n "$XDG_RUNTIME_DIR/gvfs/$subdir "
+		echo -n "$GVFSDIR/$subdir "
 		echo "$subdir" | sed "s/=*\%../ /g;s/:/ /g"
 	done
 }
