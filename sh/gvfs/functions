@@ -1,0 +1,53 @@
+GVFS_PATH="${XDG_RUNTIME_DIR}/gvfs"
+
+# list gvfs mounts available, one per line
+gvfs_mount_info() {
+	ls $XDG_RUNTIME_DIR/gvfs | while read subdir
+	do
+		echo -n "$XDG_RUNTIME_DIR/gvfs/$subdir "
+		echo "$subdir" | sed "s/=*\%../ /g;s/:/ /g"
+	done
+}
+
+# output a device name when passed unquoted mount line
+gvfs_device() {
+	gvfs_"$4"_device "$@"
+}
+
+# output a suitable device name for a usb device when passed unquoted mount line
+gvfs_usb_device() {
+	usbid="$5":"$6"
+	strings="$(lsusb -vs "$usbid" | grep i[SP] | awk '{ print $3 }')"
+	echo "$strings" | tr '\n ' '--' | sed 's/-*$//'
+}
+
+# Fetch a file from gvfs.  Outputs filename retrieved on stdout.
+# If "delete" is passed, the file will be deleted from the device.
+gvfs_fetch() {
+  module="$1"
+  device="$2"
+  label="$3"
+  timestamp="$4"
+  path="$5"
+  compression="$6"
+  delete="$7"
+
+  (
+    file2="$LOGDIR/$(get_logfilename_inprogress "$module" "$(format_date "@$timestamp")" "$device" "$label" "$compression" "${path##*.}")"
+    file3="$LOGDIR/$(get_logfilename_final "$module" "$(format_date "@$timestamp")" "$device" "$label" "$compression" "${path##*.}")"
+    size="$(stat -c %s "$path")"
+    flock -n 9 &&
+    cp "$path" "$file2" &&
+    touch -d "@$timestamp" "$file2" &&
+    if ! test "$size" -eq "$(stat -c %s "$file2")"
+    then
+      rm "$file2"
+      return 1
+    fi &&
+    mv "$file2" "$file3" &&
+    if test "$delete" = "delete"; then rm "$path"; fi &&
+    echo "$file3" ||
+    { rm "$file2" "$file3"; false; }
+  ) 9> "$LOGDIR/.gvfs_${device}_lock" &&
+  rm "$LOGDIR/.gvfs_${device}_lock"
+}

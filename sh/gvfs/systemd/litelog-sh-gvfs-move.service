@@ -1,0 +1,7 @@
+[Unit]
+Description=Litelog-Sh GVFS Copying
+
+[Service]
+EnvironmentFile=/etc/litelog
+Type=oneshot
+ExecStart=/bin/sh ${LITELOGDIR}/sh/gvfs/fetchall.sh
