@@ -28,7 +28,7 @@ do
 	mkdir -p "$confdir"
 
 	# replace default paths with configured ones, generate configuration file for the unit
-	sed -ne '/^\[Path\]/p; /^\#Path.*=/p; ' $unitfile |
+	sed -ne '/^\[Path\]/p; /^\#Path.*=/p; /^\#Directory.*=/p' $unitfile |
 		sed -e "s!LOGDIR!$LOGDIR!g; s!LITELOGDIR!$LITELOGDIR!g;" |
 		while read -r line
 	do
@@ -46,7 +46,7 @@ do
 			line="$pfx$sfx"
 		fi
 		# expand shell globs if relevant
-		if echo "$line" | grep -q = && ! echo "$pfx" | grep -q 'Glob='
+		if echo "$line" | grep -q '\*' && ! echo "$pfx" | grep -q 'Glob='
 		then
 			for entry in $sfx
 			do
