@@ -188,4 +188,8 @@ wait_for_space_free() {
   done
 }
 
-. "$LITELOGDIRSH"/video/${VIDEO_BACKEND}_functions
+if test -e "$LITELOGDIRSH"/video/"${VIDEO_BACKEND}"_functions
+then
+	. "$LITELOGDIRSH"/video/"${VIDEO_BACKEND}"_functions
+fi
+
